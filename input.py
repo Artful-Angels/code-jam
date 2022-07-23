@@ -1,4 +1,4 @@
-commands = ["del"]  # list of commands
+commands = ["delete"]  # list of commands
 
 
 def message_handler(message: str) -> None:
@@ -13,18 +13,19 @@ def message_handler(message: str) -> None:
 def command_handler(message: list, index: int) -> None:
     """
     Handles the commands
+
     For each command there will be a handler
     """
-
     cmd = message[index]
 
     match cmd:
-        # prodivde args to command function through list slicing however many args expected after the command index
-        case "del":
+        # Provide args to the command function through list slicing
+        # However many args are expected after the command index
+        case "delete":
             print("Delete command activated")
         case _:  # If the command isn't in the list, skip
             print("Unhandled command: " + cmd)     # Debug logs
-            print("Original message: " + message)  # Delete at submission!!
+            print("Original message: " + ' '.join(message))  # Delete at submission!!
             pass
 
 
@@ -34,9 +35,11 @@ def command_validator(message: str) -> list:
 
     If the command is invalid, returns False and "Too many commands passed, maximum of 1 allowed"
     """
+    message = message.lower().split()  # Splits the message into a lowercase list for further processing
     command_count = 0   # Command count
-    command_index = None 
-    for index, value in enumerate(message.lower().split()):
+    command_index = None
+
+    for index, value in enumerate(message):
         if value in commands:  # only allows for 1 command per string
 
             # If count is 1, that means it has more commands in it, so return False
@@ -46,7 +49,8 @@ def command_validator(message: str) -> list:
             command_count += 1
             command_index = index
 
-    command_handler(message.lower().split(), command_index)  # In the end, pass the message and command to the message handler to execute it
+    # In the end, pass the message and command to the message handler to execute it
+    command_handler(message, command_index)
 
     return [True]  # Tell the runner that the message was a command
 
@@ -62,7 +66,6 @@ def input_handler(message: str) -> None:
 
     for i in message.lower().split():
         if i in commands:
-
             is_command = True
             validator_response = command_validator(message)  # Validates if the message is a command
 
@@ -71,4 +74,3 @@ def input_handler(message: str) -> None:
 
     if not is_command:
         message_handler(message)  # Passes the non-command message to the message handler
-
