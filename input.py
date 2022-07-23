@@ -1,4 +1,4 @@
-commands = []  # list of commands
+commands = ["del"]  # list of commands
 
 
 def message_handler(message: str) -> None:
@@ -17,7 +17,8 @@ def command_handler(message: str, cmd: str) -> None:
     For each command there will be a handler
     """
     match cmd:
-        # TODO: implement all of the command cases
+        case "del":
+            print("Delete command activated")
         case _:  # If the command isn't in the list, skip
             print("Unhandled command: " + cmd)     # Debug logs
             print("Original message: " + message)  # Delete at submission!!
