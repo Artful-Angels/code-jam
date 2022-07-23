@@ -1,12 +1,27 @@
-commands = []  # list of command triggers
+commands = []  # list of commands
 
 
-def message_handler(message):
+def message_handler(message: str) -> None:
+    """
+    Received message handler
+
+    Sends the message to everyone
+    """
     pass
 
 
-def command_handler(message: str, cmd: str):
-    pass
+def command_handler(message: str, cmd: str) -> None:
+    """
+    Handles the commands
+
+    For each command there will be a handler
+    """
+    match cmd:
+        # TODO: implement all of the command cases
+        case _:  # If the command isn't in the list, skip
+            print("Unhandled command: " + cmd)     # Debug logs
+            print("Original message: " + message)  # Delete at submission!!
+            pass
 
 
 def command_validator(message: str) -> list:
@@ -15,7 +30,6 @@ def command_validator(message: str) -> list:
 
     If the command is invalid, returns False and "Too many commands passed, maximum of 1 allowed"
     """
-
     command_count = 0   # Command count
     command = ""        # Null handling
 
@@ -31,10 +45,10 @@ def command_validator(message: str) -> list:
 
     command_handler(message, command)  # In the end, pass the message and command to the message handler to execute it
 
-    return [True]  # Tell that it was a command
+    return [True]  # Tell the runner that the message was a command
 
 
-def input_handler(message: str) -> None:  # Pass the chat message to this function
+def input_handler(message: str) -> None:
     """
     Main chat handler
 
@@ -44,8 +58,8 @@ def input_handler(message: str) -> None:  # Pass the chat message to this functi
     is_command = False
 
     for i in message.lower().split():
-
         if i in commands:
+
             is_command = True
             validator_response = command_validator(message)  # Validates if the message is a command
 
