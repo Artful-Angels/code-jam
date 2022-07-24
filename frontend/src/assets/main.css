@@ -1,2 +1,12 @@
-@import "./base.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+@layer base {
+    input {
+        @apply appearance-none rounded-none relative block w-full px-3 py-2 dark:bg-slate-800 border border-slate-300 dark:border-gray-700 placeholder-gray-500 text-gray-900 dark:text-slate-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm first-of-type:rounded-t-md last-of-type:rounded-b-md
+    }
+    h2 {
+        @apply mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-slate-100
+    }
+}

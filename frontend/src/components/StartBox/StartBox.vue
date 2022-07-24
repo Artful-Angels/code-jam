@@ -50,18 +50,9 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "StartBox",
-  setup() {
-    function generateGameCode() {
-      return Math.floor(Math.random() * 90000) + 10000;
-      // TODO: Ensure that the game code never collides with already existing games
-    }
-
-    return {
-      generateGameCode,
-    };
-  },
-};
+<script setup>
+function generateGameCode() {
+  return Math.floor(Math.random() * 90000) + 10000;
+  // TODO: Ensure that the game code never collides with already existing games
+}
 </script>
