@@ -41,10 +41,9 @@ def CreatOrJoin(request):
             }
             cache.set(f'game:members:{game_code}',GameMembers)
 
-            
-
             data["response"] = "success_add"
             data["message"] = "New Member Added To the Game Members!!"
+            data["game_code"] = game_code
             data["game_member"] = cache.get(f'game:members:{game_code}')
             data["game_logic"] = cache.get(f'game:logic:{game_code}')
             return Response(data,status=status.HTTP_200_OK)
