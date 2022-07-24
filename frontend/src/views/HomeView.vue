@@ -1,10 +1,9 @@
 <script setup lang="ts">
+import StartBox from "@/components/StartBox/StartBox.vue";
 </script>
 
 <template>
-  <div>
-  </div>
+  <StartBox> </StartBox>
 </template>
 
-<style>
-</style>
+<style></style>
