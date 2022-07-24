@@ -11,6 +11,7 @@ constantly==15.1.0
 cryptography==37.0.4
 daphne==3.0.2
 Django==4.0.6
+djangorestframework==3.13.1
 hiredis==2.0.0
 hyperlink==21.0.0
 idna==3.3
@@ -20,6 +21,7 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.21
 pyOpenSSL==22.0.0
+pytz==2022.1
 service-identity==21.1.0
 six==1.16.0
 sqlparse==0.4.2

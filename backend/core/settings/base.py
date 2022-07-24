@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'game',
     # third party apps
     'channels',
+    'rest_framework',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -103,6 +104,11 @@ CHANNEL_LAYERS = {
 #     }
 # }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny'
+    ]
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
