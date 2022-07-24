@@ -41,7 +41,6 @@ def create_or_join(request):
                 "is_alive": True
             }
             cache.set(f'game:members:{game_code}', game_members)
-
             data["response"] = "success_add"
             data["message"] = "New Member Added To the Game Members!!"
             data["game_code"] = game_code
