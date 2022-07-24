@@ -1,21 +1,22 @@
-from django.shortcuts import render
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.response import Response
+from channels.layers import get_channel_layer
 from django.core.cache import cache
 from rest_framework import status
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
-
+from rest_framework.decorators import (
+    api_view, authentication_classes, permission_classes
+)
+from rest_framework.response import Response
 
 channel_layer = get_channel_layer()
+
+
 # Create your views here.
 @api_view(['GET'])
 @permission_classes([])
 @authentication_classes([])
-def UrlsList(request):
+def urls_list(request):
     routes = [
         'GET   game/                  ENDPOINTS',
-        'POST  createorjoin/           CREAT OR JOIN TO GAME'
+        'POST  createorjoin/          CREATE OR JOIN TO GAME'
     ]
     return Response(routes)
 
@@ -23,54 +24,52 @@ def UrlsList(request):
 @api_view(['POST'])
 @permission_classes([])
 @authentication_classes([])
-def CreatOrJoin(request):
+def create_or_join(request):
     data = {}
     if request.method == "POST":
         game_code = request.data.get("game_code")
         nickname = request.data.get("nickname")
-        GameMembers = cache.get(f'game:members:{game_code}')
-        if GameMembers:
-            if nickname in GameMembers:
+        game_members = cache.get(f'game:members:{game_code}')
+        if game_members:
+            if nickname in game_members:
                 data["response"] = "name_error"
                 data["message"] = "Name For This Game has Taken, Choice Another One!"
-                return Response(data,status=status.HTTP_409_CONFLICT)
+                return Response(data, status=status.HTTP_409_CONFLICT)
 
-            GameMembers[nickname] = {
-                "name":str(nickname),
-                "is_alive":True
+            game_members[nickname] = {
+                "name": str(nickname),
+                "is_alive": True
             }
-            cache.set(f'game:members:{game_code}',GameMembers)
-
-            
+            cache.set(f'game:members:{game_code}', game_members)
 
             data["response"] = "success_add"
             data["message"] = "New Member Added To the Game Members!!"
+            data["game_code"] = game_code
             data["game_member"] = cache.get(f'game:members:{game_code}')
             data["game_logic"] = cache.get(f'game:logic:{game_code}')
-            return Response(data,status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_200_OK)
 
-            
-        else:
-            GameLogic = {
-                "1": {
-                    "is_opend":False,
-                    "is_mine":False,
-                    "is_flaged":False,
-                    "name_num":2
-                },
-            }
+        game_logic = {
+            "1": {
+                "is_opend": False,
+                "is_mine": False,
+                "is_flaged": False,
+                "name_num": 2
+            },
+        }
 
-            GameMembers = {
-                nickname:{
-                        "name":nickname,
-                        "is_alive":True
-                    },
-            }
-            cache.set(f'game:logic:{game_code}', GameLogic)
-            cache.set(f'game:members:{game_code}', GameMembers)
+        game_members = {
+            nickname: {
+                "name": nickname,
+                "is_alive": True
+            },
+        }
+        cache.set(f'game:logic:{game_code}', game_logic)
+        cache.set(f'game:members:{game_code}', game_members)
 
-            data["response"] = "success_creat"
-            data["message"] = "New Game Created!!"
-            return Response(data,status=status.HTTP_200_OK)
+        data["response"] = "success_creat"
+        data["message"] = "New Game Created!!"
+        return Response(data, status=status.HTTP_200_OK)
+
     data["message"] = "Error"
     return Response(data)
