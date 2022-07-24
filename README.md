@@ -29,7 +29,14 @@ The game contains absolutely no bugs at all
 
 * `Bugs` Events can be discovered through posting in the chat
 
-</details>
+   <details>
+   <summary>List of bugs</summary>
+
+   1. del x, y
+   2. tnt
+
+   </details>
+   </details>
 
 ---
 # Installation #
