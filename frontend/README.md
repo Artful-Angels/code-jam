@@ -4,7 +4,7 @@ The frontend for BugSweeper uses Vue and is written in TypeScript. For developme
 
 ## Using Docker
 
-**Note: it's currently not possible to get hot-reloads for development using docker. For that reason, I'd recommend following the [manual installation](#manual-installation) if you're working on the frontend.**
+**Note: to get hot reloads, [develop from inside the Docker container](https://code.visualstudio.com/docs/remote/containers). If you don't feel comfortable doing this, use the [manual installation](#manual-installation).**
 
 
 Build and run the docker container using compose:
