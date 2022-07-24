@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'game',
     # third party apps
     'channels',
+    'rest_framework',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -103,6 +104,21 @@ CHANNEL_LAYERS = {
 #     }
 # }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny'
+    ]
+}
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis/1",
+        "TIMEOUT": 300,
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
