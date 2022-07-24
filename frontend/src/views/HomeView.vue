@@ -3,7 +3,7 @@ import StartBox from "@/components/StartBox/StartBox.vue";
 </script>
 
 <template>
-  <StartBox> </StartBox>
+  <StartBox />
 </template>
 
 <style></style>
