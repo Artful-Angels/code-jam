@@ -8,4 +8,8 @@ module.exports = {
     "eslint:recommended",
     "@vue/eslint-config-prettier",
   ],
+  env: {
+    node: true,
+    browser: true,
+  },
 };
