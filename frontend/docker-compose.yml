@@ -2,5 +2,6 @@ version: "3.9"
 services:
   frontend:
     build: .
+    container_name: frontend
     ports:
       - "8080:8080"
