@@ -2,15 +2,16 @@
 FROM python:3.9-slim
 
 # set work directory
-WORKDIR /django
+WORKDIR /app
 
 # install dependencies
 RUN pip install --upgrade pip 
-COPY requirements.txt requirements.txt
+COPY ./backend/requirements.txt backend/requirements.txt
+WORKDIR /app/backend
 RUN pip install -r requirements.txt
 
 # copy project
-COPY . /django
+COPY . .
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
