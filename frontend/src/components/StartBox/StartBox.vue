@@ -7,7 +7,7 @@
         <logo-v1 class="hidden sm:block" />
         <logo-v2 class="sm:hidden" />
       </div>
-      <div class="mt-8 space-y-6">
+      <form class="mt-8 space-y-6" @submit.prevent="submitGame">
         <div class="rounded-md shadow-sm -space-y-px">
           <label for="nickname" class="sr-only">Nickname</label>
           <input
@@ -16,22 +16,24 @@
             type="text"
             autocomplete="nickname"
             placeholder="Nickname"
+            v-model="nickname"
             required
           />
           <label for="game-code" class="sr-only">Game code</label>
           <input
             id="game-code"
             ref="game-code"
-            name="game-code"
+            name="game_code"
             type="number"
             autocomplete="off"
             placeholder="Game code"
             class="pr-28 inline"
+            v-model="gameCode"
             required
           />
           <a
             href="#"
-            @click="$refs['game-code'].value = generateGameCode()"
+            @click="updateGameCode(this.$refs['game-code'])"
             style="margin-left: -94px"
             class="font-mono relative z-50 text-blue-600 hover:text-blue-700 dark:hover:text-blue-500"
             >NEW GAME</a
@@ -44,7 +46,7 @@
             Join
           </button>
         </div>
-      </div>
+      </form>
     </main>
   </div>
 </template>
@@ -53,8 +55,20 @@
 import LogoV1 from "@/components/logos/LogoV1.vue";
 import LogoV2 from "@/components/logos/LogoV2.vue";
 
+let nickname = undefined
+let gameCode = undefined
+
+function updateGameCode(element) {
+  const event = new Event('input')
+  element.value = generateGameCode()
+  element.dispatchEvent(event)
+}
+
 function generateGameCode() {
   return Math.floor(Math.random() * 90000) + 10000;
   // TODO: Ensure that the game code never collides with already existing games
+}
+
+function submitGame() {
 }
 </script>
