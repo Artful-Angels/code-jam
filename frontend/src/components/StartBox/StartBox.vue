@@ -54,6 +54,7 @@
 <script setup>
 import LogoV1 from "@/components/logos/LogoV1.vue";
 import LogoV2 from "@/components/logos/LogoV2.vue";
+import axios from "axios";
 
 let nickname = undefined
 let gameCode = undefined
@@ -70,5 +71,13 @@ function generateGameCode() {
 }
 
 function submitGame() {
+  axios.post("http://localhost:8000/game/createorjoin", {
+    "nickname": nickname,
+    "game_code": gameCode,
+  }).then((response) => {
+    console.log("Then", response)
+  }).catch((response) => {
+    console.log("Catch", response)
+  })
 }
 </script>
