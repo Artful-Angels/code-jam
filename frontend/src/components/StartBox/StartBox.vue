@@ -71,7 +71,7 @@ function generateGameCode() {
 }
 
 function submitGame() {
-  axios.post("http://localhost:8000/game/createorjoin", {
+  axios.post("http://localhost:8000/game/createorjoin/", {
     "nickname": nickname,
     "game_code": gameCode,
   }).then((response) => {
