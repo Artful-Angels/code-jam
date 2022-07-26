@@ -70,5 +70,6 @@ def create_or_join(request):
         data["message"] = "New Game Created!!"
         return Response(data, status=status.HTTP_200_OK)
 
-    data["message"] = "Error"
-    return Response(data)
+    data["response"] = "error"
+    data["message"] = "Bad request error with the request"
+    return Response(data,status=status.HTTP_400_BAD_REQUEST)
