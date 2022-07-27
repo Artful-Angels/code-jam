@@ -2,8 +2,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from django.core.cache import cache
 import datetime
-
-
+from .game_handlers.message_handler import input_handler
+from asgiref.sync import sync_to_async
 
 # GAME HANDLER
 class GameConsumer(AsyncWebsocketConsumer):
@@ -104,16 +104,39 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print(text_data_json)
         message = text_data_json['message']
         username = text_data_json['username']
+        game_code = text_data_json['game_code']
+
+        data = {
+            "message":message,
+            "username":username,
+            "game_code":game_code
+        }
+        
+        is_regular_message =  input_handler(data)
+
         date_now = datetime.datetime.now().strftime("%I:%M %p")
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'send_messages',
-                'message': message,
-                'username': username,
-                'date': date_now,
-            }
-        )
+        if is_regular_message[0] == True:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'send_messages',
+                    'message': message,
+                    'username': username,
+                    'date': date_now,
+                }
+            )
+        else:
+            cmd = is_regular_message[1]
+            message = f"Congrat!! You Hited the {cmd} command"
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'send_notification',
+                    'message': message,
+                    'username': username,
+                    'date': date_now,
+                }
+            )
     async def send_messages(self,event):
         message = event['message']
         username = event['username']
@@ -128,8 +151,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def send_notification(self,event):
         message = event['message']
         date = event['date']
+        # cmd = event['cmd']
         await self.send(text_data=json.dumps({
             'method':'NTF',
             'message': message,
+            # "cmd":cmd,
             'date': date,
         }))
