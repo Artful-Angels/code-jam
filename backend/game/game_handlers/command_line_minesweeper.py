@@ -1,4 +1,5 @@
 from random import randint
+from ..views import create_or_join
 
 class Board:
 
