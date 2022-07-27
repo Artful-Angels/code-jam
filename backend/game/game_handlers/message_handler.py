@@ -72,6 +72,7 @@ def input_handler(data: dict) -> None:
             if not validator_response[0]:
                 return [True]
                 
+            data['cmd'] = validator_response[1]
             command_result = command_handler(data)
             if command_result:
                 return [False,validator_response[1]]
