@@ -9,4 +9,7 @@
     h2 {
         @apply mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-slate-100
     }
+    h3 {
+        @apply mt-4 text-center text-xl font-bold text-gray-900 dark:text-slate-100
+    }
 }

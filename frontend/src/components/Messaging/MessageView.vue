@@ -1,26 +1,28 @@
 <template>
   <div>
-    <div class="bg-white border-b">
-      <h2>Messages</h2>
+    <div class="bg-white border-b pb-2 pt-5 mb-3">
+      <h3 class="mt-0">Messages</h3>
     </div>
-    <div>
-      <Message
-        v-for="message in messages"
-        v-bind="message"
-        :nickname="nickname"
-      />
-    </div>
-    <div>
-      <input
-        type="text"
-        ref="messageField"
-        v-model="userMessage"
-        @keydown.enter="
-          $emit('sendMessage', userMessage);
-          userMessage = '';
-        "
-        placeholder="Message"
-      />
+    <div class="mx-3">
+      <div>
+        <Message
+          v-for="message in messages"
+          v-bind="message"
+          :nickname="nickname"
+        />
+      </div>
+      <div class="mt-4">
+        <input
+          type="text"
+          ref="messageField"
+          v-model="userMessage"
+          @keydown.enter="
+            $emit('sendMessage', userMessage);
+            userMessage = '';
+          "
+          placeholder="Message"
+        />
+      </div>
     </div>
   </div>
 </template>
