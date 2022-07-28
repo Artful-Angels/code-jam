@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <main></main>
-    <section>
+  <div class="grid grid-cols-7 h-full">
+    <main class="col-span-5 bg-white"></main>
+    <section class="col-span-2 border-l h-full">
       <MessageView
         :messages="messages"
         :nickname="nickname"
