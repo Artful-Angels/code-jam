@@ -3,7 +3,7 @@
     <div class="bg-white border-b pb-2 pt-5 mb-3">
       <h3 class="mt-0">Messages</h3>
     </div>
-    <div class="mx-3">
+    <div class="px-3">
       <div>
         <Message
           v-for="message in messages"
@@ -11,7 +11,7 @@
           :nickname="nickname"
         />
       </div>
-      <div class="mt-4">
+      <div class="mt-4 fixed bottom-6">
         <input
           type="text"
           ref="messageField"
