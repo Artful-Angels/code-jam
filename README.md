@@ -1,17 +1,16 @@
 <img src="https://user-images.githubusercontent.com/65498475/180652320-46cf78bb-ecd0-4305-a37c-09fb9bdea69b.svg" alt="BugSweeper logo" width="500">
 
-A minesweeper game with totally no bugs
+A minesweeper game with totally no bugs.
 
 ---
 
-# Introduction #
+## Introduction
 
-BugSweeper is a multiplayer minesweeper game made for the Python Discord code jam 9 using the websockets technolegy
-
-The game contains absolutely no bugs at all
+BugSweeper is a multiplayer minesweeper game made for the Python Discord code jam 9 using the websockets technology.
 
 ---
-# How do I play
+## How do I play?
+
 - `Creating a game` Press "new game" to generate a new game, enter your nickname and press "join"  
 
 - `Joining a game` Enter a game code, enter your nickname and press "join"
@@ -40,7 +39,8 @@ The game contains absolutely no bugs at all
 </details>
 
 ---
-# Installation #
+## Dev installation
+
 Using docker:
 ```shell
 docker-compose up --build
@@ -60,7 +60,7 @@ pip install -r requirements.txt
 python manage.py migrate && python manage.py runserver 0.0.0.0:8000
 ```
 ---
-# Technologies used
+## Technologies used
 
 1. Django Channels - We use Django Channels as our websocket library, used for frontend and backend connection
 2. Vue.js - We use Vue.js as our main frontend technology
