@@ -86,7 +86,6 @@ function submitGame(nickname, gameCode) {
       game_code: gameCode,
     })
     .then((response) => {
-      console.log(response);
       switch (response.status) {
         case 200:
           router.push({
