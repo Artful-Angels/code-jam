@@ -2,6 +2,10 @@ from itertools import product
 from random import randint
 
 
+def to_str(coordinates: tuple[int, int]) -> str:
+    return f"{coordinates[0]},{coordinates[1]}"
+
+
 class NicknameTaken(ValueError):
     pass
 
@@ -53,16 +57,18 @@ def _adjacent_mines(game_state: dict, x: int, y: int) -> None:
 
     coords = get_coords(game_state, x, y)
 
-    return sum(game_state["squares"].get(coord).get("is_mine") for coord in coords)
+    return sum(
+        game_state["squares"].get(to_str((coord))).get("is_mine") for coord in coords
+    )
 
 
 def _decrease_values(game_state: dict, x: int, y: int) -> int:
-
+    str_cor = to_str((x, y))
     mines = 0
     coords = get_coords(game_state, x, y)
 
     for x, y in coords:
-        square = game_state["squares"][(x, y)]
+        square = game_state["squares"][str_cor]
         if square["is_mine"]:
             mines += 1
         elif square["adjacent_mines"] > 0:
@@ -72,12 +78,12 @@ def _decrease_values(game_state: dict, x: int, y: int) -> int:
 
 
 def _reveal_zeros(game_state: dict, x: int, y: int, reveal: bool = True) -> None:
-
+    str_cor = to_str((x, y))
     coords = get_coords(game_state, x, y)
-    print("coords", coords, x, y)
+    # print("coords", coords, x, y)
 
     for x, y in coords:
-        square = game_state["squares"][(x, y)]
+        square = game_state["squares"][str_cor]
         if square["is_open"] is False and square["adjacent_mines"] == 0:
             _reveal_zeros(game_state, x, y)
         if reveal:
@@ -85,33 +91,34 @@ def _reveal_zeros(game_state: dict, x: int, y: int, reveal: bool = True) -> None
 
 
 def _scan_for_zeros(game_state: dict, x: int, y: int) -> None:
-
+    str_cor = to_str((x, y))
     coords = get_coords(game_state, x, y).union({(x, y)})
     for x, y in coords:
-        square = game_state["squares"][(x, y)]
+        square = game_state["squares"][str_cor]
         square["is_open"] = True
         if square["adjacent_mines"] == 0:
             _reveal_zeros(game_state, x, y)
 
 
 def _diffuse_start_squares(game_state: dict, x: int, y: int):
-
+    str_cor = to_str((x, y))
     coords = get_coords(game_state, x, y).union({(x, y)})
 
     for x, y in coords:
-        square = game_state["squares"][(x, y)]
+        square = game_state["squares"][str_cor]
         if square["is_mine"]:
             square["is_mine"] = False
             square["adjacent_mines"] = 0
             _decrease_values(game_state, x, y)
             square["adjacent_mines"] = _adjacent_mines(game_state, x, y)
 
-    game_state["squares"][(x, y)]["adjacent_mines"] = 0
+    game_state["squares"][str_cor]["adjacent_mines"] = 0
 
 
 def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
+    str_cor = to_str((x, y))
 
-    square = game_state["squares"][(x, y)]
+    square = game_state["squares"][str_cor]
     player = game_state["players"][nickname]
 
     if not game_state["players"][nickname]["is_alive"]:
@@ -156,7 +163,7 @@ def _reveal_board(game_state: dict):
     for row in range(game_state["height"]):
         print(row % 10, end="\t")
         for col in range(game_state["width"]):
-            square = game_state["squares"][(col, row)]
+            square = game_state["squares"][to_str((col, row))]
             if square["is_open"]:
                 if square["is_mine"]:
                     print("M", end=" ")
@@ -181,9 +188,12 @@ def create_game(game_code: int, mines: int = 100, width: int = 30, height: int =
         "squares": _mine_state,
     }
 
+    new_squares = {to_str(key): value for key, value in game_state["squares"].items()}
+    game_state["squares"] = new_squares
     for (x, y) in _mine_state:
+        str_cor = to_str((x, y))
         value = _adjacent_mines(game_state, x, y)
-        game_state["squares"][(x, y)]["adjacent_mines"] = value
+        game_state["squares"][str_cor]["adjacent_mines"] = value
 
     return game_state
 
@@ -202,6 +212,8 @@ def eliminate_player(game_state: dict, nickname: str) -> None:
 
 
 game_state = create_game(11111)
+# print(game_state["squares"])
+print(game_state["squares"]["0,0"])
 add_member_to_game(game_state, "Will")
 add_member_to_game(game_state, "Vestergurkan")
 add_member_to_game(game_state, "Annunaki")
