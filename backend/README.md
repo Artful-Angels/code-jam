@@ -9,7 +9,7 @@ docker-compose up
 
 to stop the containers:
 ```
-ctrl+c
+control+c
 ```
 
 to delete the containers:
