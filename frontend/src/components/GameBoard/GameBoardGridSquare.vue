@@ -7,7 +7,7 @@
   >
     <Flag v-if="isFlagged && !(is_open || isOpenLocal)" />
     <Mine v-else-if="(is_open || isOpenLocal) && is_mine" />
-    <span v-else-if="(is_open || isOpenLocal)">{{adjacent_mines ? adjacent_mines : '' }}</span>
+    <span v-else-if="(is_open || isOpenLocal)" class="my-[-10px]">{{adjacent_mines ? adjacent_mines : '' }}</span>
   </button>
 </template>
 
