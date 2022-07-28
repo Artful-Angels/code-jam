@@ -1,13 +1,12 @@
 from random import randint
-from ..views import create_or_join
+
 
 class Board:
-
     def __init__(self, rows=30, cols=16, mines=100):
         self.rows = rows
         self.cols = cols
         self.mine_squares = {}
-        self.squares = {(col,row): 0 for row in range(rows) for col in range(cols)}
+        self.squares = {(col, row): 0 for row in range(rows) for col in range(cols)}
         while mines > rows * cols * 0.5:
             mines = int(input("Number of mines too great, enter again:"))
         self.num_mines = mines
@@ -21,17 +20,19 @@ class Board:
         self.start_game()
 
     def generate_mines(self):
-         for mine in range(self.num_mines):
-            mine_x, mine_y = randint(0, self.cols-1), randint(0, self.rows-1)
+        for mine in range(self.num_mines):
+            mine_x, mine_y = randint(0, self.cols - 1), randint(0, self.rows - 1)
             while (mine_x, mine_y) in self.mine_squares:
-                mine_x, mine_y = randint(0, self.cols-1), randint(0, self.rows-1)
-            self.mine_squares.add((mine_x,mine_y))
-            self.squares[(mine_x,mine_y)] = "M"
-            for x in range(mine_x-1, mine_x+2):
+                mine_x, mine_y = randint(0, self.cols - 1), randint(0, self.rows - 1)
+            self.mine_squares.add((mine_x, mine_y))
+            self.squares[(mine_x, mine_y)] = "M"
+            for x in range(mine_x - 1, mine_x + 2):
                 if 0 <= x < self.cols:
-                    for y in range(mine_y-1, mine_y+2):
+                    for y in range(mine_y - 1, mine_y + 2):
                         if 0 <= y < self.rows:
-                            if (x != mine_x or y != mine_y) and self.squares[(x, y)] != "M":
+                            if (x != mine_x or y != mine_y) and self.squares[
+                                (x, y)
+                            ] != "M":
                                 self.squares[(x, y)] += 1
 
     def get_command(self):
@@ -59,9 +60,8 @@ class Board:
             if user_data[0] not in ["click", "flag", "deflag"]:
                 print("Command must be 'click', 'flag' or 'deflag'")
                 correct = False
-            
+
         return user_data, correct
-        
 
     def start_game(self):
         user_data, valid = self.get_command()
@@ -74,22 +74,22 @@ class Board:
         command, x, y = user_data
         x, y = int(x), int(y)
 
-        for x_coord in range(x-1, x+2):
+        for x_coord in range(x - 1, x + 2):
             if 0 <= x_coord < self.cols:
-                for y_coord in range(y-1, y+2):
+                for y_coord in range(y - 1, y + 2):
                     if 0 <= y_coord < self.rows:
                         if self.squares[(x_coord, y_coord)] == "M":
                             self.squares[(x_coord, y_coord)] = 0
                             self.change_mine_nums(x_coord, y_coord)
-                            self.scan_for_mines(x_coord, y_coord) 
-        self.squares[(x,y)] = 0
+                            self.scan_for_mines(x_coord, y_coord)
+        self.squares[(x, y)] = 0
 
-        for x_coord in range(x-1, x+2):
+        for x_coord in range(x - 1, x + 2):
             if 0 <= x_coord < self.cols:
-                for y_coord in range(y-1, y+2):
+                for y_coord in range(y - 1, y + 2):
                     if 0 <= y_coord < self.rows:
-                        self.uncovered_squares.add((x_coord,y_coord))
-                        if self.squares[(x_coord,y_coord)] == 0:
+                        self.uncovered_squares.add((x_coord, y_coord))
+                        if self.squares[(x_coord, y_coord)] == 0:
                             if x != x_coord or y != y_coord:
                                 self.reveal_zeros(x_coord, y_coord)
 
@@ -105,30 +105,33 @@ class Board:
                 self.first_click = False
 
     def scan_for_mines(self, x, y):
-        for x_coord in range(x-1, x+2):
+        for x_coord in range(x - 1, x + 2):
             if 0 <= x_coord < self.cols:
-                for y_coord in range(y-1, y+2):
+                for y_coord in range(y - 1, y + 2):
                     if 0 <= y_coord < self.rows:
-                        if self.squares[(x_coord,y_coord)] == "M":
-                            self.squares[(x,y)] += 1
+                        if self.squares[(x_coord, y_coord)] == "M":
+                            self.squares[(x, y)] += 1
 
     def change_mine_nums(self, x, y):
-        for x_coord in range(x-1, x+2):
+        for x_coord in range(x - 1, x + 2):
             if 0 <= x_coord < self.cols:
-                for y_coord in range(y-1, y+2):
+                for y_coord in range(y - 1, y + 2):
                     if 0 <= y_coord < self.rows:
                         if self.squares[(x_coord, y_coord)] != "M":
                             if self.squares[(x_coord, y_coord)] > 0:
                                 self.squares[(x_coord, y_coord)] -= 1
 
     def reveal_zeros(self, x, y, reveal=True):
-        for x_coord in range(x-1, x+2):
+        for x_coord in range(x - 1, x + 2):
             if 0 <= x_coord < self.cols:
-                for y_coord in range(y-1, y+2):
+                for y_coord in range(y - 1, y + 2):
                     if 0 <= y_coord < self.rows:
                         if self.squares[(x_coord, y_coord)] == 0:
                             if x != x_coord or y != y_coord:
-                                if (x_coord, y_coord) not in self.uncovered_squares:
+                                if (
+                                    x_coord,
+                                    y_coord,
+                                ) not in self.uncovered_squares:
                                     self.reveal_zeros(x_coord, y_coord)
                         if reveal:
                             self.uncovered_squares.add((x_coord, y_coord))
@@ -149,7 +152,7 @@ class Board:
             print(row % 10, end="\t")
             for col in range(self.cols):
                 if (col, row) in self.uncovered_squares:
-                    print(self.squares[(col,row)], end=" ")
+                    print(self.squares[(col, row)], end=" ")
                 elif (col, row) in self.flags:
                     print("F", end=" ")
                 else:
@@ -160,7 +163,10 @@ class Board:
         if command.lower() == "click":
             if (square_x, square_y) in self.flags:
                 print("You have to deflag before clicking.")
-            elif (square_x, square_y) in self.mine_squares and not self.first_click:
+            elif (
+                square_x,
+                square_y,
+            ) in self.mine_squares and not self.first_click:
                 self.game_over = True
                 self.reveal_board()
                 print("GAME OVER - FAILED")
@@ -168,7 +174,10 @@ class Board:
             elif set(self.squares) - self.uncovered_squares == self.mine_squares:
                 print("GAME OVER - SUCCESS!")
                 return False
-            elif (square_x, square_y) in self.uncovered_squares and not self.first_click:
+            elif (
+                square_x,
+                square_y,
+            ) in self.uncovered_squares and not self.first_click:
                 print("You've already clicked this.")
             else:
                 self.uncovered_squares.add((square_x, square_y))
@@ -177,13 +186,13 @@ class Board:
             if (square_x, square_y) in self.uncovered_squares:
                 print("You can only flag covered squares.")
             else:
-                self.flags[(square_x, square_y)] = self.squares[(square_x,square_y)]
-                self.squares[(square_x,square_y)] = "F"
+                self.flags[(square_x, square_y)] = self.squares[(square_x, square_y)]
+                self.squares[(square_x, square_y)] = "F"
         elif command.lower() == "deflag":
             if (square_x, square_y) not in self.flags:
                 print("That square was not flagged.")
             else:
-                self.squares[(square_x,square_y)] = self.flags[(square_x, square_y)]
+                self.squares[(square_x, square_y)] = self.flags[(square_x, square_y)]
                 del self.flags[(square_x, square_y)]
         else:
             print("Command must be 'click', 'flag' or 'deflag'")
@@ -192,5 +201,6 @@ class Board:
         print()
         self.reveal_board()
         return True
+
 
 Board(rows=16, cols=30, mines=10)

@@ -1,9 +1,9 @@
-from random import randint
 from itertools import product
+from random import randint
 
 
 class NicknameTaken(ValueError):
-    pass 
+    pass
 
 
 class PlayerDead(Exception):
@@ -19,19 +19,21 @@ def number_of_mines(width: int, height: int) -> int:
 
 def _generate_mines(mines: int, width: int, height: int) -> dict:
 
-    _mine_state = {(x, y): {
+    _mine_state = {
+        (x, y): {
             "coordinates": (x, y),
             "is_open": False,
             "is_mine": False,
-            "adjacent_mines": 0
+            "adjacent_mines": 0,
         }
-        for y in range(height) for x in range(width)
+        for y in range(height)
+        for x in range(width)
     }
 
     for mine in range(mines):
-        x, y = randint(0, width-1), randint(0, height-1)
+        x, y = randint(0, width - 1), randint(0, height - 1)
         while _mine_state[(x, y)]["is_mine"]:
-            x, y = randint(0, width-1), randint(0, height-1)
+            x, y = randint(0, width - 1), randint(0, height - 1)
         _mine_state[(x, y)]["is_mine"] = True
 
     return _mine_state
@@ -39,16 +41,20 @@ def _generate_mines(mines: int, width: int, height: int) -> dict:
 
 def get_coords(game_state: dict, x: int, y: int):
 
-    coords = set(product([x-1, x, x+1], [y-1, y, y+1])) - {(x, y)}
-    return {(x, y) for (x, y) in coords if 0 <= x < game_state["width"] and 0 <= y < game_state["height"]}
+    coords = set(product([x - 1, x, x + 1], [y - 1, y, y + 1])) - {(x, y)}
+    return {
+        (x, y)
+        for (x, y) in coords
+        if 0 <= x < game_state["width"] and 0 <= y < game_state["height"]
+    }
 
- 
+
 def _adjacent_mines(game_state: dict, x: int, y: int) -> None:
 
     coords = get_coords(game_state, x, y)
 
     return sum(game_state["squares"].get(coord).get("is_mine") for coord in coords)
-    
+
 
 def _decrease_values(game_state: dict, x: int, y: int) -> int:
 
@@ -65,31 +71,27 @@ def _decrease_values(game_state: dict, x: int, y: int) -> int:
     return mines
 
 
-def _reveal_zeros(game_state: dict, x: int, y: int, reveal: bool=True) -> None:
-
-    game_state["squares"][(x, y)]["is_open"] = True
+def _reveal_zeros(game_state: dict, x: int, y: int, reveal: bool = True) -> None:
 
     coords = get_coords(game_state, x, y)
-    zeros = {(x, y) for (x, y) in coords if game_state["squares"][(x, y)]["adjacent_mines"] == 0}
+    print("coords", coords, x, y)
 
     for x, y in coords:
         square = game_state["squares"][(x, y)]
-        if not square["is_open"] and not square["is_mine"] and square["adjacent_mines"] == 0:
-            _reveal_zeros(game_state, x, y, reveal)
+        if square["is_open"] is False and square["adjacent_mines"] == 0:
+            _reveal_zeros(game_state, x, y)
         if reveal:
             square["is_open"] = True
 
 
-def _scan_for_zeros(game_state: dict, x: int, y: int, reveal: bool=True) -> None:
+def _scan_for_zeros(game_state: dict, x: int, y: int) -> None:
 
-    game_state["squares"][(x, y)]["is_open"] = True
-    coords = get_coords(game_state, x, y)
-
+    coords = get_coords(game_state, x, y).union({(x, y)})
     for x, y in coords:
         square = game_state["squares"][(x, y)]
         square["is_open"] = True
-        if square["adjacent_mines"] == 0 and not square["is_mine"]:
-            _reveal_zeros(game_state, x, y, reveal)
+        if square["adjacent_mines"] == 0:
+            _reveal_zeros(game_state, x, y)
 
 
 def _diffuse_start_squares(game_state: dict, x: int, y: int):
@@ -110,27 +112,25 @@ def _diffuse_start_squares(game_state: dict, x: int, y: int):
 def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
 
     square = game_state["squares"][(x, y)]
+    player = game_state["players"][nickname]
 
     if not game_state["players"][nickname]["is_alive"]:
         raise PlayerDead()
-    elif game_state["first_click"]:
-        game_state["first_click"] = False
+    elif not game_state["is_started"]:
         _diffuse_start_squares(game_state, x, y)
         _scan_for_zeros(game_state, x, y)
-    elif game_state["squares"][(x, y)]["is_mine"]:
-        eliminate_player(game_state, nickname)
+    elif square["is_mine"]:
+        player["is_alive"] = False
         game_state["is_finished"] = True
         for player in game_state["players"]:
             if game_state["players"][player]["is_alive"]:
                 game_state["is_finished"] = False
                 break
-
-    square["is_open"] = True
-    if _is_won(game_state):
+    elif _is_won(game_state):
         game_state["is_finished"] = True
     else:
-        if square["adjacent_mines"] == 0:
-            _scan_for_zeros(game_state, x, y)
+        square["is_open"] = True
+        _reveal_zeros(x, y, reveal=False)
 
     return game_state
 
@@ -173,8 +173,8 @@ def create_game(game_code: int, mines: int = 100, width: int = 30, height: int =
 
     game_state = {
         "game_code": game_code,
-        "first_click": True,
-        "is_finished": False,
+        "is_started": False,
+        "is_finished": True,
         "width": width,
         "height": height,
         "players": {},
@@ -191,8 +191,8 @@ def create_game(game_code: int, mines: int = 100, width: int = 30, height: int =
 def add_member_to_game(game_state: dict, nickname: str) -> None:
 
     if nickname in game_state["players"]:
-        raise NicknameTaken() 
-    else:    
+        raise NicknameTaken()
+    else:
         game_state["players"][nickname] = {"nickname": nickname, "is_alive": True}
 
 
@@ -200,3 +200,11 @@ def eliminate_player(game_state: dict, nickname: str) -> None:
 
     game_state["players"][nickname]["is_alive"] = False
 
+
+game_state = create_game(11111)
+add_member_to_game(game_state, "Will")
+add_member_to_game(game_state, "Vestergurkan")
+add_member_to_game(game_state, "Annunaki")
+_reveal_board(game_state)
+square_clicked(game_state, "Will", 0, 0)
+_reveal_board(game_state)
