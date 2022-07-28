@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="dark:text-gray-200">
     <p
       class="inline mr-3 uppercase font-mono font-semibold"
       :class="{ 'text-blue-600': username === nickname }"
