@@ -66,7 +66,7 @@ import axios from "axios";
 import router from "@/router";
 import { inject } from "vue";
 
-const $cookies = inject('$cookies');
+const $cookies = inject("$cookies");
 
 let nickname = undefined;
 let gameCode = undefined;
@@ -91,8 +91,8 @@ function submitGame(nickname, gameCode) {
     .then((response) => {
       switch (response.status) {
         case 200:
-          startGame(gameCode, nickname)
-          break
+          startGame(gameCode, nickname);
+          break;
         default:
           showError("Unrecognized response!");
       }
@@ -107,9 +107,9 @@ function submitGame(nickname, gameCode) {
 }
 
 function startGame(gameCode, nickname) {
-  $cookies.set("nickname", nickname)
+  $cookies.set("nickname", nickname);
   router.push({
-    name: 'game',
+    name: "game",
     params: { gameCode: gameCode },
   });
 }

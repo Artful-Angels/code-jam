@@ -1,6 +1,11 @@
 <template>
   <div>
-    <p class="inline mr-3 uppercase font-mono font-semibold" :class="{ 'text-blue-600': username === nickname }">{{ username }}</p>
+    <p
+      class="inline mr-3 uppercase font-mono font-semibold"
+      :class="{ 'text-blue-600': username === nickname }"
+    >
+      {{ username }}
+    </p>
     <p class="inline">{{ message }}</p>
   </div>
 </template>
@@ -22,6 +27,6 @@ const props = defineProps({
   nickname: {
     type: String,
     required: true,
-  }
-})
+  },
+});
 </script>

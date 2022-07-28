@@ -4,18 +4,32 @@
       <h2>Messages</h2>
     </div>
     <div>
-      <Message v-for="message in messages" v-bind="message" :nickname="nickname" />
+      <Message
+        v-for="message in messages"
+        v-bind="message"
+        :nickname="nickname"
+      />
     </div>
     <div>
-      <button @click="$emit('sendMessage', 'Test message')">Send message</button>
+      <input
+        type="text"
+        ref="messageField"
+        v-model="userMessage"
+        @keydown.enter="
+          $emit('sendMessage', userMessage);
+          userMessage = '';
+        "
+        placeholder="Message"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
 import Message from "@/components/Messaging/Message.vue";
+import { ref } from "vue";
 
-defineEmits(["sendMessage"])
+defineEmits(["sendMessage"]);
 
 const props = defineProps({
   messages: {
@@ -26,5 +40,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
-})
+});
+
+let userMessage = ref("");
 </script>

@@ -13,8 +13,8 @@ const router = createRouter({
       path: "/game/:gameCode",
       name: "game",
       component: () => import("../views/GameView.vue"),
-      props: route => ({
-        gameCode: Number(route.params.gameCode)
+      props: (route) => ({
+        gameCode: Number(route.params.gameCode),
       }),
     },
   ],
