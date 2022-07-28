@@ -3,7 +3,7 @@
   <main>
   </main>
   <section>
-    <MessageView :messages="messages" @send-message="(message) => sendMessage(message)" />
+    <MessageView :messages="messages" :nickname="nickname" @send-message="(message) => sendMessage(message)" />
   </section>
   </div>
 </template>
