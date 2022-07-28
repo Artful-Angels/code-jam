@@ -1,7 +1,9 @@
 <template>
   <div class="grid grid-cols-7 h-full">
-    <main class="col-span-5 bg-white"></main>
-    <section class="col-span-2 border-l h-full">
+    <main class="col-span-5 bg-white p-10">
+      <GameBoard />
+    </main>
+    <section class="col-span-2 border-l-2 h-full">
       <MessageView
         :messages="messages"
         :nickname="nickname"
@@ -14,6 +16,7 @@
 <script setup>
 import { inject, reactive } from "vue";
 import MessageView from "@/components/Messaging/MessageView.vue";
+import GameBoard from "@/components/GameBoard/GameBoard.vue";
 
 const $cookies = inject("$cookies");
 const nickname = $cookies.get("nickname");
