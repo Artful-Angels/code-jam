@@ -17,18 +17,19 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.game_id,
             self.channel_name,
         )
-        GameMembers = cache.get(f"game:members:{self.game_id}")
-        if GameMembers:
-            if len(GameMembers.keys()) >= 4:
+        game_state = cache.get(f"game:{self.game_id}")
+        game_players = game_state["players"]
+        if game_state:
+            if len(game_players.keys()) >= 4:
 
-                GameLogic = cache.get(f"game:logic:{self.game_id}")
-                Game = {"game_members": GameMembers, "game_logic": GameLogic}
+                # GameLogic = cache.get(f"game:logic:{self.game_id}")
+                # Game = {"game_members": GameMembers, "game_logic": GameLogic}
                 await self.channel_layer.group_send(
-                    self.game_id, {"type": "Send_Game", "data": Game}
+                    self.game_id, {"type": "Send_Game", "data": game_state}
                 )
             else:
                 await self.channel_layer.group_send(
-                    self.game_id, {"type": "Send_Memebers", "data": GameMembers}
+                    self.game_id, {"type": "Send_Memebers", "data": game_players}
                 )
 
         await self.accept()
