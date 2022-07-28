@@ -90,8 +90,8 @@ function submitGame(nickname, gameCode) {
       switch (response.status) {
         case 200:
           router.push({
-            path: "/game",
-            query: { code: gameCode.toString() },
+            name: 'game',
+            params: { gameCode: gameCode },
           });
           break;
         default:
