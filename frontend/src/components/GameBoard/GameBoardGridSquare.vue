@@ -1,13 +1,13 @@
 <template>
   <button
     class="flex items-center place-content-center p-1 rounded-md aspect-square"
-    :class="{ 'bg-gray-100': !(isOpen || isOpenLocal) }"
+    :class="{ 'bg-gray-100': !(is_open || isOpenLocal) }"
     @click="openSquare"
     @contextmenu.prevent="$emit('toggleFlag', coordinates)"
   >
-    <Flag v-if="isFlagged && !(isOpen || isOpenLocal)" />
-    <Mine v-else-if="(isOpen || isOpenLocal) && isMine" />
-    <span v-else-if="(isOpen || isOpenLocal)">{{adjacentMines ? adjacentMines : '' }}</span>
+    <Flag v-if="isFlagged && !(is_open || isOpenLocal)" />
+    <Mine v-else-if="(is_open || isOpenLocal) && is_mine" />
+    <span v-else-if="(is_open || isOpenLocal)">{{adjacent_mines ? adjacent_mines : '' }}</span>
   </button>
 </template>
 
@@ -20,15 +20,15 @@ const emit = defineEmits(["openSquare", "toggleFlag"])
 
 const props = defineProps({
   coordinates: {
-    type: String,
+    type: Array,
     required: true,
   },
-  isOpen: {
+  is_open: {
     type: Boolean,
     required: false,
     default: false,
   },
-  isMine: {
+  is_mine: {
     type: Boolean,
     required: false,
     default: false,
@@ -38,7 +38,7 @@ const props = defineProps({
     required: false,
     default: false,
   },
-  adjacentMines: {
+  adjacent_mines: {
     type: Number,
     required: false,
     default: 0,
@@ -48,9 +48,7 @@ const props = defineProps({
 let isOpenLocal = ref(false)
 
 function openSquare() {
-  if (!props.isFlagged) {
-    console.log("Opening square")
-
+  if (!props.isFlagged && !(props.is_open || isOpenLocal.value)) {
     emit('openSquare', props.coordinates)
     isOpenLocal.value = true
   }

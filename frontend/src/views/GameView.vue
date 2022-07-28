@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-cols-7 h-full">
     <main class="col-span-5 bg-white p-10">
-      <GameBoard />
+      <GameBoard :gameState="gameState" @openSquare="(coordinates) => { openSquare(coordinates) }" />
     </main>
     <section class="col-span-2 border-l-2 h-full">
       <MessageView
@@ -29,6 +29,7 @@ const props = defineProps({
 });
 
 let messages = reactive([]);
+let gameState = reactive({value: {}});
 
 const gameSocket = new WebSocket(
   `ws://localhost:8000/ws/game/${props.gameCode}/`
@@ -36,6 +37,13 @@ const gameSocket = new WebSocket(
 gameSocket.addEventListener("message", function (event) {
   let data = JSON.parse(event.data.toString());
   console.log("Message from gameSocket: ", data);
+  switch (data.method) {
+    case "update_members":
+      gameState.value.players = data.data
+      break
+    case "start_game":
+      gameState.value = data.data
+  }
 });
 
 const chatSocket = new WebSocket(
@@ -45,7 +53,6 @@ chatSocket.addEventListener("message", function (event) {
   const data = JSON.parse(event.data.toString());
   console.log("Message from chatSocket: ", data);
   messages.push(data);
-  console.log(messages);
 });
 
 function sendMessage(message) {
@@ -56,5 +63,9 @@ function sendMessage(message) {
       game_code: props.gameCode,
     })
   );
+}
+
+function openSquare(coordinates) {
+  console.log("Opening square", coordinates)
 }
 </script>

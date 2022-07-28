@@ -1,11 +1,12 @@
 <template>
   <div class="grid gap-1 grid-cols-[repeat(30,_minmax(0,_1fr))]">
     <GameBoardGridSquare
-      v-for="square in squares"
-      :key="square.coordinates"
+      v-for="(square, key) in squares"
+      :key="key"
       v-bind="square"
-      :isFlagged="flaggedSquares[square.coordinates]"
+      :isFlagged="flaggedSquares[key]"
       @toggleFlag="(coordinates) => toggleFlag(coordinates)"
+      @openSquare="(coordinates) => $emit('openSquare', coordinates)"
     />
   </div>
 </template>
@@ -20,6 +21,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+defineEmits(["openSquare"])
 
 let flaggedSquares = reactive({});
 
