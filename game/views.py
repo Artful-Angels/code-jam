@@ -6,6 +6,10 @@ from rest_framework.decorators import (
 )
 from rest_framework.response import Response
 
+from .game_handlers.game_logic import (
+    NicknameTaken, add_member_to_game, create_game
+)
+
 channel_layer = get_channel_layer()
 
 
@@ -29,36 +33,37 @@ def create_or_join(request):
     if request.method == "POST":
         game_code = request.data.get("game_code")
         nickname = request.data.get("nickname")
-        game_members = cache.get(f"game:members:{game_code}")
-        if game_members:
-            if nickname in game_members:
+        game_state = cache.get(f"game:{game_code}")
+        if game_state:
+            try:
+                add_member_to_game(game_state, nickname)
+            except NicknameTaken:
                 data["response"] = "name_error"
                 data["message"] = "Name For This Game has Taken, Choice Another One!"
                 return Response(data, status=status.HTTP_409_CONFLICT)
 
-            game_members[nickname] = {"name": str(nickname), "is_alive": True}
-            cache.set(f"game:members:{game_code}", game_members)
+            cache.set(f"game:{game_code}", game_state)
             data["response"] = "success_add"
             data["message"] = "New Member Added To the Game Members!!"
-            data["game_code"] = game_code
-            data["game_member"] = cache.get(f"game:members:{game_code}")
-            data["game_logic"] = cache.get(f"game:logic:{game_code}")
+            data["game_state"] = game_state
             return Response(data, status=status.HTTP_200_OK)
 
-        game_logic = {
-            "1": {
-                "is_opend": False,
-                "is_mine": False,
-                "is_flaged": False,
-                "name_num": 2,
-            },
-        }
+        game_state = create_game(int(game_code))
+        add_member_to_game(game_state, nickname)
+        # game_logic = {
+        #     "1": {
+        #         "is_opend": False,
+        #         "is_mine": False,
+        #         "is_flaged": False,
+        #         "name_num": 2,
+        #     },
+        # }
 
-        game_members = {
-            nickname: {"name": nickname, "is_alive": True},
-        }
-        cache.set(f"game:logic:{game_code}", game_logic)
-        cache.set(f"game:members:{game_code}", game_members)
+        # game_members = {
+        #     nickname: {"name": nickname, "is_alive": True},
+        # }
+        cache.set(f"game:{game_code}", game_state)
+        # cache.set(f"game:members:{game_code}", game_members)
 
         data["response"] = "success_creat"
         data["message"] = "New Game Created!!"
