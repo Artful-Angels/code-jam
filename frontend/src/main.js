@@ -1,11 +1,12 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
+import VueCookies from 'vue-cookies'
 
 import "./assets/main.css";
 
-const app = createApp(App);
+const app = createApp(App)
 
 app.use(router);
-
-app.mount("#app");
+app.use(VueCookies)
+app.mount("#app")

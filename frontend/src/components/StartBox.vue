@@ -64,6 +64,9 @@ import LogoV1 from "@/components/logos/LogoV1.vue";
 import LogoV2 from "@/components/logos/LogoV2.vue";
 import axios from "axios";
 import router from "@/router";
+import { inject } from "vue";
+
+const $cookies = inject('$cookies');
 
 let nickname = undefined;
 let gameCode = undefined;
@@ -88,11 +91,8 @@ function submitGame(nickname, gameCode) {
     .then((response) => {
       switch (response.status) {
         case 200:
-          router.push({
-            name: 'game',
-            params: { gameCode: gameCode },
-          });
-          break;
+          startGame(gameCode, nickname)
+          break
         default:
           showError("Unrecognized response!");
       }
@@ -104,6 +104,14 @@ function submitGame(nickname, gameCode) {
         );
       }
     });
+}
+
+function startGame(gameCode, nickname) {
+  $cookies.set("nickname", nickname)
+  router.push({
+    name: 'game',
+    params: { gameCode: gameCode },
+  });
 }
 
 function showError(text) {
