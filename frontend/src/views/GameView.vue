@@ -1,12 +1,16 @@
 <template>
   <div>
-    <ul>
-    </ul>
+  <main>
+  </main>
+  <section>
+    <MessageView :messages="messages" @send-message="(message) => sendMessage(message)" />
+  </section>
   </div>
 </template>
 
 <script setup>
-import { inject } from "vue";
+import { inject, reactive } from "vue";
+import MessageView from "@/components/Messaging/MessageView.vue";
 
 const $cookies = inject('$cookies');
 const nickname = $cookies.get("nickname")
@@ -18,6 +22,8 @@ const props = defineProps({
   },
 })
 
+let messages = reactive([])
+
 const gameSocket = new WebSocket(`ws://localhost:8000/ws/game/${props.gameCode}/`);
 gameSocket.addEventListener('message', function (event) {
   let data = JSON.parse(event.data.toString())
@@ -26,7 +32,17 @@ gameSocket.addEventListener('message', function (event) {
 
 const chatSocket = new WebSocket(`ws://localhost:8000/ws/chat/${props.gameCode}/${nickname}/`);
 chatSocket.addEventListener('message', function (event) {
-  let data = JSON.parse(event.data.toString())
+  const data = JSON.parse(event.data.toString())
   console.log('Message from chatSocket: ', data);
+  messages.push(data)
+  console.log(messages)
 });
+
+function sendMessage(message) {
+  chatSocket.send(JSON.stringify({
+    message: message,
+    username: nickname,
+    game_code: props.gameCode,
+  }))
+}
 </script>
