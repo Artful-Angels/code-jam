@@ -7,10 +7,6 @@ class NicknameTaken(ValueError):
     pass 
 
 
-class PlayerDead(Exception):
-    pass
-
-
 def number_of_mines(width: int, height: int) -> int:
 
     lower = (width * height) // 5
@@ -99,7 +95,7 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
     square = game_state["squares"][dumps([x, y])]
 
     if not game_state["players"][nickname]["is_alive"]:
-        raise PlayerDead()
+        return
     elif not game_state["is_started"]:
         game_state["is_started"] = True
         _remove_mines(game_state, x, y)
