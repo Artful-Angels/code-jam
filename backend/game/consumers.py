@@ -50,14 +50,17 @@ class GameConsumer(AsyncWebsocketConsumer):
             click_at = data["click_at"]  # should = list or tuple
 
             game_state = cache.get(f"game:{self.game_id}")
-            square_clicked(game_state, player_name, *click_at)
-            cache.set(f"game:{self.game_id}", game_state)
-            # Hint For Improve :
-            # - Now i am sending the whole game_state at each click after update it
-            # - That will be heavy on the frontend and on the WS connection
-            # - Maybe send just the change only will be better
+            if game_state:
+                if game_state["players"][player_name]["is_alive"]:
 
-            await self.channel_layer.group_send(self.game_id, {"type": "Update_Game", "data": game_state})
+                    square_clicked(game_state, player_name, *click_at)
+                    cache.set(f"game:{self.game_id}", game_state)
+                    # Hint For Improve :
+                    # - Now i am sending the whole game_state at each click after update it
+                    # - That will be heavy on the frontend and on the WS connection
+                    # - Maybe send just the changes only will be better
+
+                    await self.channel_layer.group_send(self.game_id, {"type": "Update_Game", "data": game_state})
 
     # Handlers
     # Receive message from group
