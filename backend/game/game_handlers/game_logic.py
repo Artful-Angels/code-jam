@@ -1,21 +1,22 @@
-from random import randint
 from itertools import product
 from json import dumps
+from random import randint
 
 
 class NicknameTaken(ValueError):
-    pass 
+    """Handles what to do if a nickname is taken"""
+
+    pass
 
 
 def number_of_mines(width: int, height: int) -> int:
-
+    """Calculates the number of mines there should be by the height and width"""
     lower = (width * height) // 5
     upper = (width * height) // 4
     return randint(lower, upper)
 
 
 def _generate_mines(mines: int, width: int, height: int) -> dict:
-
     _mine_state = {
         dumps([x, y]): {
             "coordinates": (x, y),
@@ -27,29 +28,26 @@ def _generate_mines(mines: int, width: int, height: int) -> dict:
     }
 
     for mine in range(mines):
-        x, y = randint(0, width-1), randint(0, height-1)
+        x, y = randint(0, width - 1), randint(0, height - 1)
         while _mine_state[dumps([x, y])]["is_mine"]:
-            x, y = randint(0, width-1), randint(0, height-1)
+            x, y = randint(0, width - 1), randint(0, height - 1)
         _mine_state[dumps([x, y])]["is_mine"] = True
 
     return _mine_state
 
 
 def _get_coords(game_state: dict, x: int, y: int):
-
-    coords = set(product([x-1, x, x+1], [y-1, y, y+1])) - {(x, y)}
+    coords = set(product([x - 1, x, x + 1], [y - 1, y, y + 1])) - {(x, y)}
     return {(x, y) for (x, y) in coords if 0 <= x < game_state["width"] and 0 <= y < game_state["height"]}
 
- 
-def _adjacent_mines(game_state: dict, x: int, y: int) -> None:
 
+def _adjacent_mines(game_state: dict, x: int, y: int) -> None:
     coords = _get_coords(game_state, x, y)
 
     return sum(game_state["squares"].get(dumps(coord)).get("is_mine") for coord in coords)
-    
+
 
 def _decrease_values(game_state: dict, x: int, y: int) -> int:
-
     mines = 0
     coords = _get_coords(game_state, x, y)
 
@@ -62,8 +60,8 @@ def _decrease_values(game_state: dict, x: int, y: int) -> int:
 
     return mines
 
-def _reveal_zeros(game_state: dict, x: int, y: int, reveal_all: bool=True) -> None:
 
+def _reveal_zeros(game_state: dict, x: int, y: int, reveal_all: bool = True) -> None:
     if reveal_all or (not reveal_all and game_state["squares"][dumps([x, y])]["adjacent_mines"] == 0):
         game_state["squares"][dumps([x, y])]["is_open"] = True
 
@@ -78,7 +76,6 @@ def _reveal_zeros(game_state: dict, x: int, y: int, reveal_all: bool=True) -> No
 
 
 def _remove_mines(game_state: dict, x: int, y: int):
-
     coords = _get_coords(game_state, x, y).union({(x, y)})
 
     for x, y in coords:
@@ -91,7 +88,6 @@ def _remove_mines(game_state: dict, x: int, y: int):
 
 
 def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
-
     square = game_state["squares"][dumps([x, y])]
 
     if not game_state["players"][nickname]["is_alive"]:
@@ -122,7 +118,6 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
 
 
 def _is_won(game_state: dict) -> True:
-
     squares = game_state["squares"]
 
     for coord in squares:
@@ -154,7 +149,6 @@ def _reveal_board(game_state: dict):
 
 
 def create_game(game_code: int, mines: int = 100, width: int = 30, height: int = 16):
-
     _mine_state = _generate_mines(mines, width, height)
 
     game_state = {
@@ -175,13 +169,11 @@ def create_game(game_code: int, mines: int = 100, width: int = 30, height: int =
 
 
 def add_member_to_game(game_state: dict, nickname: str) -> None:
-
     if nickname in game_state["players"]:
-        raise NicknameTaken() 
-    else:    
+        raise NicknameTaken()
+    else:
         game_state["players"][nickname] = {"nickname": nickname, "is_alive": True}
 
 
 def eliminate_player(game_state: dict, nickname: str) -> None:
-
     game_state["players"][nickname]["is_alive"] = False
