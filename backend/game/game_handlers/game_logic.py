@@ -46,20 +46,14 @@ def _generate_mines(mines: int, width: int, height: int) -> dict:
 def get_coords(game_state: dict, x: int, y: int):
 
     coords = set(product([x - 1, x, x + 1], [y - 1, y, y + 1])) - {(x, y)}
-    return {
-        (x, y)
-        for (x, y) in coords
-        if 0 <= x < game_state["width"] and 0 <= y < game_state["height"]
-    }
+    return {(x, y) for (x, y) in coords if 0 <= x < game_state["width"] and 0 <= y < game_state["height"]}
 
 
 def _adjacent_mines(game_state: dict, x: int, y: int) -> None:
 
     coords = get_coords(game_state, x, y)
 
-    return sum(
-        game_state["squares"].get(to_str((coord))).get("is_mine") for coord in coords
-    )
+    return sum(game_state["squares"].get(to_str((coord))).get("is_mine") for coord in coords)
 
 
 def _decrease_values(game_state: dict, x: int, y: int) -> int:

@@ -17,11 +17,12 @@ services:
       - 8000:8000
     volumes:
       - .:/app
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: "python manage.py runserver 0.0.0.0:8000"
+    # command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
 
   redis:
-    image: redis:alpine
+    image: redis
     container_name: redis
     ports:
       - "6379:6379"
