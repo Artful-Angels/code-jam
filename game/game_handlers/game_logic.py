@@ -128,26 +128,6 @@ def _is_won(game_state: dict) -> True:
     return True
 
 
-# this is only for testing
-def _reveal_board(game_state: dict):
-    print("\t", end="")
-    for num in range(game_state["width"]):
-        print(num % 10, end=" ")
-    print("\n")
-    for row in range(game_state["height"]):
-        print(row % 10, end="\t")
-        for col in range(game_state["width"]):
-            square = game_state["squares"][dumps([col, row])]
-            if square["is_open"]:
-                if square["is_mine"]:
-                    print("M", end=" ")
-                else:
-                    print(square["adjacent_mines"], end=" ")
-            else:
-                print("?", end=" ")
-        print()
-
-
 def create_game(game_code: int, mines: int = 100, width: int = 30, height: int = 16):
     _mine_state = _generate_mines(mines, width, height)
 
