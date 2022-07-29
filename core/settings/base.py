@@ -25,18 +25,17 @@ SECRET_KEY = "django-insecure-+9hqiwgeez875)l5oaq2fe@1i0u05@e^vg-l3v0xmog3hc6ko+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
 INSTALLED_APPS = [
     # apps
-    "game",
+    "game.apps.GameConfig",
     # third party apps
     "channels",
     "rest_framework",
     "corsheaders",
+    # built in apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -81,23 +80,27 @@ ASGI_APPLICATION = "core.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
+            # Redis hosts config if the server running with Docker
             "hosts": [("redis", 6379)],
+            # Redis hosts config if the server running in localhost
+            # "hosts": [("127.0.0.1",6379)]
         },
     },
 }
 
+# Channel layers config running on memory without redis server, (For Testing)
 # CHANNEL_LAYERS = {
 #     "default": {
 #         "BACKEND": "channels.layers.InMemoryChannelLayer"
