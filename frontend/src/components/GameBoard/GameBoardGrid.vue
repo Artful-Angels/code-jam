@@ -20,9 +20,9 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-})
+});
 
-defineEmits(["openSquare"])
+defineEmits(["openSquare"]);
 
 let flaggedSquares = reactive({});
 
@@ -30,7 +30,7 @@ function toggleFlag(coordinates) {
   if (flaggedSquares.hasOwnProperty(coordinates)) {
     flaggedSquares[coordinates] = flaggedSquares[coordinates] === false;
   } else {
-    flaggedSquares[coordinates] = true
+    flaggedSquares[coordinates] = true;
   }
 }
 </script>

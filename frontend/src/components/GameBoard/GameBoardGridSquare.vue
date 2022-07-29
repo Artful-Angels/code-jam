@@ -7,7 +7,11 @@
   >
     <Flag v-if="isFlagged && !(is_open || isOpenLocal)" />
     <Mine v-else-if="(is_open || isOpenLocal) && is_mine" />
-    <span v-else-if="(is_open || isOpenLocal)" class="my-[-10px] dark:text-gray-300">{{adjacent_mines ? adjacent_mines : '' }}</span>
+    <span
+      v-else-if="is_open || isOpenLocal"
+      class="my-[-10px] dark:text-gray-300"
+      >{{ adjacent_mines ? adjacent_mines : "" }}</span
+    >
   </button>
 </template>
 
@@ -16,7 +20,7 @@ import Flag from "@/components/icons/Flag.vue";
 import Mine from "@/components/icons/Mine.vue";
 import { ref } from "vue";
 
-const emit = defineEmits(["openSquare", "toggleFlag"])
+const emit = defineEmits(["openSquare", "toggleFlag"]);
 
 const props = defineProps({
   coordinates: {
@@ -45,12 +49,12 @@ const props = defineProps({
   },
 });
 
-let isOpenLocal = ref(false)
+let isOpenLocal = ref(false);
 
 function openSquare() {
   if (!props.isFlagged && !(props.is_open || isOpenLocal.value)) {
-    emit('openSquare', props.coordinates)
-    isOpenLocal.value = true
+    emit("openSquare", props.coordinates);
+    isOpenLocal.value = true;
   }
 }
 </script>

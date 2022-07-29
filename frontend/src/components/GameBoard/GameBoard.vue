@@ -7,7 +7,10 @@
         <p>Anybody's turn</p>
       </div>
     </div>
-    <GameBoardGrid :squares="gameState.value?.squares || {}" @openSquare="(coordinates) => $emit('openSquare', coordinates)" />
+    <GameBoardGrid
+      :squares="gameState.value?.squares || {}"
+      @openSquare="(coordinates) => $emit('openSquare', coordinates)"
+    />
   </div>
 </template>
 
@@ -20,7 +23,7 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-})
+});
 
-defineEmits(["openSquare"])
+defineEmits(["openSquare"]);
 </script>
