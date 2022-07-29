@@ -47,20 +47,8 @@ Using docker:
 ```shell
 docker-compose up --build
 ```
-Manual running:
+Note: You need to have the desktop Docker app, download it from https://docs.docker.com/get-docker/
 
-Shell 1:
-```shell
-cd frontend
-npm install
-npm run dev
-```
-Shell 2:
-```shell
-cd backend
-pip install -r requirements.txt
-python manage.py migrate && python manage.py runserver 0.0.0.0:8000
-```
 ---
 ## Technologies used
 
