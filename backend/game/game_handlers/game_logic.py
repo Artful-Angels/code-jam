@@ -41,7 +41,7 @@ def _get_coords(game_state: dict, x: int, y: int):
     return {(x, y) for (x, y) in coords if 0 <= x < game_state["width"] and 0 <= y < game_state["height"]}
 
 
-def _adjacent_mines(game_state: dict, x: int, y: int) -> int:
+def _adjacent_mines(game_state: dict, x: int, y: int) -> None:
     coords = _get_coords(game_state, x, y)
 
     return sum(game_state["squares"].get(dumps(coord)).get("is_mine") for coord in coords)
@@ -91,7 +91,7 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
     square = game_state["squares"][dumps([x, y])]
 
     if not game_state["players"][nickname]["is_alive"]:
-        return {}
+        return
     elif not game_state["is_started"]:
         game_state["is_started"] = True
         _remove_mines(game_state, x, y)
@@ -157,3 +157,23 @@ def add_member_to_game(game_state: dict, nickname: str) -> None:
 
 def eliminate_player(game_state: dict, nickname: str) -> None:
     game_state["players"][nickname]["is_alive"] = False
+
+
+# this is only for testing
+def _reveal_board(game_state: dict):
+    print("\t", end="")
+    for num in range(game_state["width"]):
+        print(num % 10, end=" ")
+    print("\n")
+    for row in range(game_state["height"]):
+        print(row % 10, end="\t")
+        for col in range(game_state["width"]):
+            square = game_state["squares"][(col, row)]
+            if square["is_open"]:
+                if square["is_mine"]:
+                    print("M", end=" ")
+                else:
+                    print(square["adjacent_mines"], end=" ")
+            else:
+                print("?", end=" ")
+        print()
