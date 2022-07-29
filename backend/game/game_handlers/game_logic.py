@@ -3,6 +3,11 @@ from json import dumps
 from random import randint
 
 
+class PlayerDead(Exception):
+    """Handles what to do if a dead player clicks a square"""
+
+    pass
+
 class NicknameTaken(ValueError):
     """Handles what to do if a nickname is taken"""
 
@@ -91,7 +96,7 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
     square = game_state["squares"][dumps([x, y])]
 
     if not game_state["players"][nickname]["is_alive"]:
-        return
+        return PlayerDead()
     elif not game_state["is_started"]:
         game_state["is_started"] = True
         _remove_mines(game_state, x, y)
