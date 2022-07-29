@@ -1,14 +1,14 @@
 <template>
   <button
     class="flex items-center place-content-center p-1 rounded-md aspect-square"
-    :class="{ 'bg-gray-100 dark:bg-slate-800': !(is_open || isOpenLocal) }"
+    :class="{ 'bg-gray-100 dark:bg-slate-800': !is_open }"
     @click="openSquare"
     @contextmenu.prevent="$emit('toggleFlag', coordinates)"
   >
-    <Flag v-if="isFlagged && !(is_open || isOpenLocal)" />
-    <Mine v-else-if="(is_open || isOpenLocal) && is_mine" />
+    <Flag v-if="isFlagged && !is_open" />
+    <Mine v-else-if="is_open && is_mine" />
     <span
-      v-else-if="is_open || isOpenLocal"
+      v-else-if="is_open"
       class="my-[-10px] dark:text-gray-300"
       >{{ adjacent_mines ? adjacent_mines : "" }}</span
     >
@@ -49,12 +49,10 @@ const props = defineProps({
   },
 });
 
-let isOpenLocal = ref(false);
 
 function openSquare() {
-  if (!props.isFlagged && !(props.is_open || isOpenLocal.value)) {
+  if (!props.isFlagged && !props.is_open) {
     emit("openSquare", props.coordinates);
-    isOpenLocal.value = true;
   }
 }
 </script>

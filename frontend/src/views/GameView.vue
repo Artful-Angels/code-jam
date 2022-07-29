@@ -50,6 +50,10 @@ gameSocket.addEventListener("message", function (event) {
       break;
     case "start_game":
       gameState.value = data.data;
+      break;
+    case "update_game":
+      gameState.value = data.data;
+      break;
   }
 });
 
@@ -74,5 +78,15 @@ function sendMessage(message) {
 
 function openSquare(coordinates) {
   console.log("Opening square", coordinates);
+  gameSocket.send(
+    JSON.stringify({
+      method: "update_game",
+      data: {
+        game_code: props.gameCode,
+        player_name: nickname,
+        click_at: coordinates,
+      },
+    })
+  );
 }
 </script>
