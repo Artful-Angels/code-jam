@@ -1,13 +1,10 @@
-from itertools import product
 from random import randint
-
-
-def to_str(coordinates: tuple[int, int]) -> str:
-    return f"{coordinates[0]},{coordinates[1]}"
+from itertools import product
+from json import dumps
 
 
 class NicknameTaken(ValueError):
-    pass
+    pass 
 
 
 class PlayerDead(Exception):
@@ -24,45 +21,44 @@ def number_of_mines(width: int, height: int) -> int:
 def _generate_mines(mines: int, width: int, height: int) -> dict:
 
     _mine_state = {
-        (x, y): {
+        dumps([x, y]): {
             "coordinates": (x, y),
             "is_open": False,
             "is_mine": False,
-            "adjacent_mines": 0,
+            "adjacent_mines": 0
         }
-        for y in range(height)
-        for x in range(width)
+        for y in range(height) for x in range(width)
     }
 
     for mine in range(mines):
-        x, y = randint(0, width - 1), randint(0, height - 1)
-        while _mine_state[(x, y)]["is_mine"]:
-            x, y = randint(0, width - 1), randint(0, height - 1)
-        _mine_state[(x, y)]["is_mine"] = True
+        x, y = randint(0, width-1), randint(0, height-1)
+        while _mine_state[dumps([x, y])]["is_mine"]:
+            x, y = randint(0, width-1), randint(0, height-1)
+        _mine_state[dumps([x, y])]["is_mine"] = True
 
     return _mine_state
 
 
-def get_coords(game_state: dict, x: int, y: int):
+def _get_coords(game_state: dict, x: int, y: int):
 
-    coords = set(product([x - 1, x, x + 1], [y - 1, y, y + 1])) - {(x, y)}
+    coords = set(product([x-1, x, x+1], [y-1, y, y+1])) - {(x, y)}
     return {(x, y) for (x, y) in coords if 0 <= x < game_state["width"] and 0 <= y < game_state["height"]}
 
-
+ 
 def _adjacent_mines(game_state: dict, x: int, y: int) -> None:
 
-    coords = get_coords(game_state, x, y)
+    coords = _get_coords(game_state, x, y)
 
-    return sum(game_state["squares"].get(to_str((coord))).get("is_mine") for coord in coords)
-
+    return sum(game_state["squares"].get(dumps(coord)).get("is_mine") for coord in coords)
+    
 
 def _decrease_values(game_state: dict, x: int, y: int) -> int:
-    str_cor = to_str((x, y))
+
     mines = 0
-    coords = get_coords(game_state, x, y)
+    coords = _get_coords(game_state, x, y)
 
     for x, y in coords:
-        square = game_state["squares"][str_cor]
+        square = game_state["squares"][dumps([x, y])]
         if square["is_mine"]:
             mines += 1
         elif square["adjacent_mines"] > 0:
@@ -70,58 +66,50 @@ def _decrease_values(game_state: dict, x: int, y: int) -> int:
 
     return mines
 
+def _reveal_zeros(game_state: dict, x: int, y: int, reveal_all: bool=True) -> None:
 
-def _reveal_zeros(game_state: dict, x: int, y: int, reveal: bool = True) -> None:
-    str_cor = to_str((x, y))
-    coords = get_coords(game_state, x, y)
-    # print("coords", coords, x, y)
+    if reveal_all or (not reveal_all and game_state["squares"][dumps([x, y])]["adjacent_mines"] == 0):
+        game_state["squares"][dumps([x, y])]["is_open"] = True
 
-    for x, y in coords:
-        square = game_state["squares"][str_cor]
-        if square["is_open"] is False and square["adjacent_mines"] == 0:
-            _reveal_zeros(game_state, x, y)
-        if reveal:
+    coords = _get_coords(game_state, x, y)
+
+    for other_x, other_y in coords:
+        square = game_state["squares"][dumps([other_x, other_y])]
+        if not square["is_open"] and not square["is_mine"] and square["adjacent_mines"] == 0:
+            _reveal_zeros(game_state, other_x, other_y)
+        if reveal_all:
             square["is_open"] = True
 
 
-def _scan_for_zeros(game_state: dict, x: int, y: int) -> None:
-    str_cor = to_str((x, y))
-    coords = get_coords(game_state, x, y).union({(x, y)})
+def _remove_mines(game_state: dict, x: int, y: int):
+
+    coords = _get_coords(game_state, x, y).union({(x, y)})
+
     for x, y in coords:
-        square = game_state["squares"][str_cor]
+        square = game_state["squares"][dumps([x, y])]
         square["is_open"] = True
-        if square["adjacent_mines"] == 0:
-            _reveal_zeros(game_state, x, y)
-
-
-def _diffuse_start_squares(game_state: dict, x: int, y: int):
-    str_cor = to_str((x, y))
-    coords = get_coords(game_state, x, y).union({(x, y)})
-
-    for x, y in coords:
-        square = game_state["squares"][str_cor]
         if square["is_mine"]:
             square["is_mine"] = False
-            square["adjacent_mines"] = 0
             _decrease_values(game_state, x, y)
             square["adjacent_mines"] = _adjacent_mines(game_state, x, y)
 
-    game_state["squares"][str_cor]["adjacent_mines"] = 0
-
 
 def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
-    str_cor = to_str((x, y))
 
-    square = game_state["squares"][str_cor]
-    player = game_state["players"][nickname]
+    square = game_state["squares"][dumps([x, y])]
 
     if not game_state["players"][nickname]["is_alive"]:
         raise PlayerDead()
     elif not game_state["is_started"]:
-        _diffuse_start_squares(game_state, x, y)
-        _scan_for_zeros(game_state, x, y)
-    elif square["is_mine"]:
-        player["is_alive"] = False
+        game_state["is_started"] = True
+        _remove_mines(game_state, x, y)
+        for x, y in _get_coords(game_state, x, y):
+            if game_state["squares"][dumps([x, y])]["adjacent_mines"] == 0:
+                _reveal_zeros(game_state, x, y)
+            else:
+                _reveal_zeros(game_state, x, y, False)
+    elif game_state["squares"][dumps([x, y])]["is_mine"]:
+        eliminate_player(game_state, nickname)
         game_state["is_finished"] = True
         for player in game_state["players"]:
             if game_state["players"][player]["is_alive"]:
@@ -131,7 +119,8 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
         game_state["is_finished"] = True
     else:
         square["is_open"] = True
-        _reveal_zeros(x, y, reveal=False)
+        if square["adjacent_mines"] == 0:
+            _reveal_zeros(game_state, x, y)
 
     return game_state
 
@@ -140,9 +129,9 @@ def _is_won(game_state: dict) -> True:
 
     squares = game_state["squares"]
 
-    for x, y in squares:
-        if not squares[(x, y)]["is_open"]:
-            if not squares[(x, y)]["is_mine"]:
+    for coord in squares:
+        if not squares[coord]["is_open"]:
+            if not squares[coord]["is_mine"]:
                 return False
 
     return True
@@ -157,7 +146,7 @@ def _reveal_board(game_state: dict):
     for row in range(game_state["height"]):
         print(row % 10, end="\t")
         for col in range(game_state["width"]):
-            square = game_state["squares"][to_str((col, row))]
+            square = game_state["squares"][dumps([col, row])]
             if square["is_open"]:
                 if square["is_mine"]:
                     print("M", end=" ")
@@ -175,19 +164,16 @@ def create_game(game_code: int, mines: int = 100, width: int = 30, height: int =
     game_state = {
         "game_code": game_code,
         "is_started": False,
-        "is_finished": True,
+        "is_finished": False,
         "width": width,
         "height": height,
         "players": {},
         "squares": _mine_state,
     }
 
-    new_squares = {to_str(key): value for key, value in game_state["squares"].items()}
-    game_state["squares"] = new_squares
-    for (x, y) in _mine_state:
-        str_cor = to_str((x, y))
-        value = _adjacent_mines(game_state, x, y)
-        game_state["squares"][str_cor]["adjacent_mines"] = value
+    for coord in _mine_state:
+        value = _adjacent_mines(game_state, *_mine_state[coord]["coordinates"])
+        game_state["squares"][coord]["adjacent_mines"] = value
 
     return game_state
 
@@ -195,22 +181,11 @@ def create_game(game_code: int, mines: int = 100, width: int = 30, height: int =
 def add_member_to_game(game_state: dict, nickname: str) -> None:
 
     if nickname in game_state["players"]:
-        raise NicknameTaken()
-    else:
+        raise NicknameTaken() 
+    else:    
         game_state["players"][nickname] = {"nickname": nickname, "is_alive": True}
 
 
 def eliminate_player(game_state: dict, nickname: str) -> None:
 
     game_state["players"][nickname]["is_alive"] = False
-
-
-game_state = create_game(11111)
-# print(game_state["squares"])
-print(game_state["squares"]["0,0"])
-add_member_to_game(game_state, "Will")
-add_member_to_game(game_state, "Vestergurkan")
-add_member_to_game(game_state, "Annunaki")
-_reveal_board(game_state)
-square_clicked(game_state, "Will", 0, 0)
-_reveal_board(game_state)
