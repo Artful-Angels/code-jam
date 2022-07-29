@@ -1,9 +1,9 @@
 <template>
   <div class="grid grid-cols-7 h-full">
-    <main class="col-span-5 bg-white p-10">
+    <main class="col-span-5 bg-white dark:bg-slate-900 p-10">
       <GameBoard :gameState="gameState" @openSquare="(coordinates) => { openSquare(coordinates) }" />
     </main>
-    <section class="col-span-2 border-l-2 h-full">
+    <section class="col-span-2 border-l-2 dark:border-slate-700 h-full">
       <MessageView
         :messages="messages"
         :nickname="nickname"

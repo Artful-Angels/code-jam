@@ -1,13 +1,13 @@
 <template>
   <button
     class="flex items-center place-content-center p-1 rounded-md aspect-square"
-    :class="{ 'bg-gray-100': !(is_open || isOpenLocal) }"
+    :class="{ 'bg-gray-100 dark:bg-slate-800': !(is_open || isOpenLocal) }"
     @click="openSquare"
     @contextmenu.prevent="$emit('toggleFlag', coordinates)"
   >
     <Flag v-if="isFlagged && !(is_open || isOpenLocal)" />
     <Mine v-else-if="(is_open || isOpenLocal) && is_mine" />
-    <span v-else-if="(is_open || isOpenLocal)" class="my-[-10px]">{{adjacent_mines ? adjacent_mines : '' }}</span>
+    <span v-else-if="(is_open || isOpenLocal)" class="my-[-10px] dark:text-gray-300">{{adjacent_mines ? adjacent_mines : '' }}</span>
   </button>
 </template>
 
