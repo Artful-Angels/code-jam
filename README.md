@@ -1,4 +1,6 @@
-<img src="https://user-images.githubusercontent.com/65498475/180652320-46cf78bb-ecd0-4305-a37c-09fb9bdea69b.svg" alt="BugSweeper logo" width="500">
+<img src="https://user-images.githubusercontent.com/65498475/180652320-46cf78bb-ecd0-4305-a37c-09fb9bdea69b.svg#gh-light-mode-only" alt="BugSweeper logo" width="500">
+<img src="https://user-images.githubusercontent.com/65498475/181659011-5d3aa919-1dcf-4507-b443-2d9ca8d25641.svg#gh-dark-mode-only" alt=BugSweeper logo" width="500">
+
 
 A minesweeper game with totally no bugs.
 
