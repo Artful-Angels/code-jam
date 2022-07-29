@@ -8,6 +8,7 @@ class PlayerDead(Exception):
 
     pass
 
+
 class NicknameTaken(ValueError):
     """Handles what to do if a nickname is taken"""
 
@@ -164,7 +165,6 @@ def eliminate_player(game_state: dict, nickname: str) -> None:
     game_state["players"][nickname]["is_alive"] = False
 
 
-# this is only for testing
 def _reveal_board(game_state: dict):
     print("\t", end="")
     for num in range(game_state["width"]):
