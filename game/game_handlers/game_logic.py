@@ -111,14 +111,7 @@ def _remove_mines(game_state: dict, x: int, y: int):
             square["adjacent_mines"] = _adjacent_mines(game_state, x, y)
 
 
-def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
-
-    if not game_state["players"][nickname]["is_alive"]:
-        raise PlayerDead()
-    elif game_state["is_finished"]:
-        raise GameFinished()
-    elif game_state["turn_id"] != game_state["players"][nickname]["id"]:
-        raise NotPlayersTurn()
+def _assign_turn(game_state: dict, nickname: str) -> None:
 
     players = game_state["players"]
     alive_players = [player for player in players if players[player]["is_alive"]]
@@ -132,6 +125,21 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
             next_player = alive_players[current_player_index + 1]
 
         game_state["turn_id"] = players[next_player]["id"]
+
+    else:
+        game_state["turn_id"] = players[nickname]["id"]
+
+
+def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
+
+    if not game_state["players"][nickname]["is_alive"]:
+        raise PlayerDead()
+    elif game_state["is_finished"]:
+        raise GameFinished()
+    elif game_state["turn_id"] != game_state["players"][nickname]["id"]:
+        raise NotPlayersTurn()
+
+    _assign_turn(game_state, nickname)
 
     square = game_state["squares"][dumps([x, y])]
 
@@ -200,6 +208,8 @@ def roll_winner(game_state: dict, nickname: str) -> dict:
         for player in alive_players:
             if nickname != player:
                 game_state["players"][player]["is_alive"] = False
+
+    _assign_turn(game_state, nickname)
 
     return game_state
 
