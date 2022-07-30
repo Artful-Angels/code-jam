@@ -34,8 +34,8 @@ BugSweeper is a multiplayer minesweeper game made for the Python Discord code ja
   <details>
   <summary>List of bugs</summary>
 
-  1. del x, y
-  2. tnt
+  1. "delete" - Reveals an open and safe square
+  2. "winner" - Chance to kill all other players
 
   </details>
 </details>
