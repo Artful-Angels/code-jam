@@ -1,6 +1,6 @@
 from itertools import product
 from json import dumps
-from random import randint
+from random import randint, choice
 
 
 class PlayerDead(Exception):
@@ -124,7 +124,7 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
     return game_state
 
 
-def _is_won(game_state: dict) -> True:
+def _is_won(game_state: dict) -> bool:
     squares = game_state["squares"]
 
     for coord in squares:
@@ -133,6 +133,16 @@ def _is_won(game_state: dict) -> True:
                 return False
 
     return True
+
+
+def delete_square(game_state: dict) -> dict:
+
+    squares = game_state["squares"]
+    closed_squares = {square for square in squares if not squares[square]["is_open"] and not squares[square]["is_mine"]}
+    deleted_square = choice(closed_squares)
+    squares[deleted_square]["is_open"] = True
+
+    return game_state
 
 
 def create_game(game_code: int, mines: int = 100, width: int = 30, height: int = 16):
