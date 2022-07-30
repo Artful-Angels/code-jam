@@ -152,7 +152,7 @@ def delete_square(game_state: dict, nickname: str) -> dict:
 def roll_winner(game_state: dict, nickname: str) -> dict:
     players = game_state["players"]
 
-    if players[nickname]["chanced_win"] or nickname not in players:
+    if players[nickname]["chanced_win"] or nickname not in players or not players[nickname]["is_alive"]:
         return game_state
 
     alive_players = [player for player in players if players[player]["is_alive"]]
