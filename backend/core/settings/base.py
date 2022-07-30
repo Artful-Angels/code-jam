@@ -88,6 +88,9 @@ ASGI_APPLICATION = "core.asgi.application"
 # }
 
 
+# Cannel layers config
+
+# 1- Channel layers config wirth redis
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -100,22 +103,22 @@ CHANNEL_LAYERS = {
     },
 }
 
-# Channel layers config running on memory without redis server, (For Testing)
+# 2 -Channel layers config running on memory (without redis server)
 # CHANNEL_LAYERS = {
 #     "default": {
 #         "BACKEND": "channels.layers.InMemoryChannelLayer"
 #     }
 # }
 
-REST_FRAMEWORK = {"DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"]}
+# Cache Config
 
+# 1- Cache config with redis
 
-# Cache config with redis
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://redis/1",
-        "TIMEOUT": 1000,
+        "TIMEOUT": 2000,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "MAX_ENTRIES": 1000,
@@ -123,39 +126,23 @@ CACHES = {
     }
 }
 
-# Cache config in local memory
+# 2- Cache config in local memory (without need redis)
+
 # CACHES = {
 #     "default": {
 #         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
 #         "LOCATION": "unique-snowflake",
-#         "TIMEOUT": 1000,
+#         "TIMEOUT": 2000,
 #         "OPTIONS": {
 #             "MAX_ENTRIES": 1000,
-#         },
-#     }
-# }
-
-# Cache config with memcached
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
-#         "LOCATION": [
-#             "memcache1:11211",
-#             "memcache2:11211",
-#         ],
-#         "TIMEOUT": 1000,
-#         "OPTIONS": {
-#             "MAX_ENTRIES": 1000,
-#             'no_delay': True,
-#             'ignore_exc': True,
-#             'max_pool_size': 4,
-#             'use_pooling': True,
 #         },
 #     }
 # }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
+
+REST_FRAMEWORK = {"DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"]}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
