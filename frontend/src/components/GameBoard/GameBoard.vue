@@ -8,7 +8,7 @@
             <img
               src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f9d1.svg"
               alt="Players emoji"
-              class="w-9 inline"
+              class="w-8 inline"
             />
             {{ alivePlayers.length }}
           </span>
@@ -16,7 +16,7 @@
             <img
               src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f480.svg"
               alt="Skull emoji"
-              class="w-8 inline"
+              class="w-7 inline"
             />
             {{ deadPlayers.length }}
           </span>
@@ -42,7 +42,7 @@
 import GameBoardGrid from "@/components/GameBoard/GameBoardGrid.vue";
 import LogoV1 from "@/components/logos/LogoV1.vue";
 import GameBoardWaiting from "@/components/GameBoard/GameBoardWaiting.vue";
-import { computed } from "vue";
+import { computed, watch } from "vue";
 
 const props = defineProps({
   gameCode: {
@@ -73,5 +73,13 @@ const deadPlayers = computed(() => {
     (playerName) => !props.gameState.value.players[playerName].is_alive
   );
 });
-defineEmits(["openSquare"]);
+
+watch(deadPlayers, (newValue, oldValue) => {
+  if (oldValue.length !== newValue.length) {
+    const deadPlayer = newValue.filter((x) => !oldValue.includes(x))[0];
+    emits("playerDied", deadPlayer);
+  }
+});
+
+const emits = defineEmits(["openSquare", "playerDied"]);
 </script>

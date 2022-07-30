@@ -10,6 +10,11 @@
             openSquare(coordinates);
           }
         "
+        @playerDied="
+          (player) => {
+            systemMessage(`${player} has died`);
+          }
+        "
       />
     </main>
     <section class="col-span-2 border-l-2 dark:border-slate-700 h-full">
@@ -54,6 +59,7 @@ gameSocket.addEventListener("message", function (event) {
     case "start_game":
       gameState.value = data.data;
       gameStarted.value = true;
+      systemMessage("Game has started!");
       break;
     case "update_game":
       gameState.value = data.data;
@@ -69,6 +75,14 @@ chatSocket.addEventListener("message", function (event) {
   console.log("Message from chatSocket: ", data);
   messages.push(data);
 });
+
+function systemMessage(message) {
+  messages.push({
+    message: message,
+    username: "server",
+    systemMessage: true,
+  });
+}
 
 function sendMessage(message) {
   chatSocket.send(

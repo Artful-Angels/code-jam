@@ -2,7 +2,10 @@
   <div class="dark:text-gray-200">
     <p
       class="inline mr-3 uppercase font-mono font-semibold"
-      :class="{ 'text-blue-600': username === nickname }"
+      :class="{
+        'text-blue-600': username === nickname,
+        'text-red-600 text-center': systemMessage,
+      }"
     >
       {{ username }}
     </p>
@@ -22,7 +25,12 @@ const props = defineProps({
   },
   date: {
     type: String,
-    required: true,
+    required: false,
+  },
+  systemMessage: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
   nickname: {
     type: String,
