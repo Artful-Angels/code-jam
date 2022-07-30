@@ -3,7 +3,7 @@ from channels.layers import get_channel_layer
 from django.core.cache import cache
 
 from .game_logic import (
-    CommandFailed, close_opend_squares, delete_square, new_life, roll_winner
+    CommandFailed, close_open_squares, delete_square, new_life, roll_winner
 )
 
 channel_layer = get_channel_layer()
@@ -47,7 +47,7 @@ def command_handler(data: dict) -> None:
             return False
     elif cmd == "close":
         try:
-            new_game_state = close_opend_squares(game_state, nickname)
+            new_game_state = close_open_squares(game_state, nickname)
             cache.set(f"game:{game_code}", new_game_state)
             async_to_sync(channel_layer.group_send)(str(game_code), {"type": "Update_Game", "data": new_game_state})
         except CommandFailed:
