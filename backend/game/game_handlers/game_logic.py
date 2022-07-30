@@ -217,10 +217,12 @@ def roll_winner(game_state: dict, nickname: str) -> dict:
 def new_life(game_state: dict, nickname: str) -> dict:
 
     players = game_state["players"]
-
+    alive_players = [player for player in players if players[player]["is_alive"]]
     if not players[nickname]["is_alive"]:
         game_state["players"][nickname]["is_alive"] = True
-
+        game_state["is_finished"] = False
+    if len(alive_players) == 0:
+        game_state["turn_id"] = players[nickname]["id"]
     return game_state
 
 
