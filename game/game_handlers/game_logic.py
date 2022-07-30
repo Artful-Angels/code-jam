@@ -21,6 +21,12 @@ class CommandFailed(ValueError):
     pass
 
 
+class PlayersNotTurn(ValueError):
+    """Handles what to do if it's not the player turn"""
+
+    pass
+
+
 def number_of_mines(width: int, height: int) -> int:
     """Calculates the number of mines there should be by the height and width"""
     lower = (width * height) // 5
@@ -100,6 +106,9 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
 
     if not game_state["players"][nickname]["is_alive"]:
         return PlayerDead()
+    if not game_state["players"][nickname]["his_turn"]:
+        return PlayersNotTurn()
+
     elif not game_state["is_started"]:
         game_state["is_started"] = True
         _remove_mines(game_state, x, y)
@@ -207,10 +216,26 @@ def create_game(game_code: int, mines: int = 100, width: int = 30, height: int =
 
 
 def add_member_to_game(game_state: dict, nickname: str) -> None:
+    players_number = len(game_state["players"].keys())
     if nickname in game_state["players"]:
         raise NicknameTaken()
     else:
-        game_state["players"][nickname] = {"nickname": nickname, "is_alive": True, "chanced_win": False}
+        if players_number == 0:
+            game_state["players"][nickname] = {
+                "nickname": nickname,
+                "is_alive": True,
+                "chanced_win": False,
+                "his_turn": True,
+                "sequence": 1,
+            }
+        else:
+            game_state["players"][nickname] = {
+                "nickname": nickname,
+                "is_alive": True,
+                "chanced_win": False,
+                "his_turn": False,
+                "sequence": players_number + 1,
+            }
 
 
 def eliminate_player(game_state: dict, nickname: str) -> None:
