@@ -5,7 +5,7 @@
     >
       <h3 class="mt-0">Messages</h3>
     </div>
-    <div class="px-3">
+    <div class="px-3 scroll-smooth">
       <div>
         <Message
           v-for="message in messages"
