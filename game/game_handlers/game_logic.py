@@ -107,6 +107,7 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
             else:
                 _reveal_zeros(game_state, x, y, False)
     elif game_state["squares"][dumps([x, y])]["is_mine"]:
+        square["is_open"] = True
         eliminate_player(game_state, nickname)
         game_state["is_finished"] = True
         for player in game_state["players"]:
