@@ -2,11 +2,13 @@ from asgiref.sync import async_to_sync, sync_to_async
 from channels.layers import get_channel_layer
 from django.core.cache import cache
 
-from .game_logic import CommandFailed, delete_square, roll_winner
+from .game_logic import (
+    CommandFailed, close_opend_squares, delete_square, new_life, roll_winner
+)
 
 channel_layer = get_channel_layer()
 
-commands = ["delete", "winner"]  # list of commands
+commands = ["delete", "winner", "new", "close"]  # list of commands
 
 
 @sync_to_async
@@ -23,8 +25,6 @@ def command_handler(data: dict) -> None:
     if cmd == "delete":
         if not game_state["players"][nickname]["is_alive"]:
             return False
-        # here the (delete) command logic will be
-        # in any error case return False
         try:
             new_game_state = delete_square(game_state, nickname)
             cache.set(f"game:{game_code}", new_game_state)
@@ -32,10 +32,22 @@ def command_handler(data: dict) -> None:
         except CommandFailed:
             return False
     elif cmd == "winner":
-        # here the (winner) command logic will be
-        # in any error case return False
         try:
             new_game_state = roll_winner(game_state, nickname)
+            cache.set(f"game:{game_code}", new_game_state)
+            async_to_sync(channel_layer.group_send)(str(game_code), {"type": "Update_Game", "data": new_game_state})
+        except CommandFailed:
+            return False
+    elif cmd == "new":
+        try:
+            new_game_state = new_life(game_state, nickname)
+            cache.set(f"game:{game_code}", new_game_state)
+            async_to_sync(channel_layer.group_send)(str(game_code), {"type": "Update_Game", "data": new_game_state})
+        except CommandFailed:
+            return False
+    elif cmd == "close":
+        try:
+            new_game_state = close_opend_squares(game_state, nickname)
             cache.set(f"game:{game_code}", new_game_state)
             async_to_sync(channel_layer.group_send)(str(game_code), {"type": "Update_Game", "data": new_game_state})
         except CommandFailed:
