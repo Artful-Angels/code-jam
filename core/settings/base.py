@@ -110,6 +110,7 @@ CHANNEL_LAYERS = {
 REST_FRAMEWORK = {"DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"]}
 
 
+# Cache config with redis
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -122,6 +123,36 @@ CACHES = {
     }
 }
 
+# Cache config in local memory
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+#         "LOCATION": "unique-snowflake",
+#         "TIMEOUT": 1000,
+#         "OPTIONS": {
+#             "MAX_ENTRIES": 1000,
+#         },
+#     }
+# }
+
+# Cache config with memcached
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
+#         "LOCATION": [
+#             "memcache1:11211",
+#             "memcache2:11211",
+#         ],
+#         "TIMEOUT": 1000,
+#         "OPTIONS": {
+#             "MAX_ENTRIES": 1000,
+#             'no_delay': True,
+#             'ignore_exc': True,
+#             'max_pool_size': 4,
+#             'use_pooling': True,
+#         },
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
