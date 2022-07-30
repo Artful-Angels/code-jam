@@ -12,7 +12,7 @@ commands = ["delete", "winner", "new", "close"]  # list of commands
 
 
 @sync_to_async
-def command_handler(data: dict) -> None:
+def command_handler(data: dict) -> bool:
     """
     Handles the commands
 
@@ -47,7 +47,7 @@ def command_handler(data: dict) -> None:
             return False
     elif cmd == "close":
         try:
-            new_game_state = close_open_squares(game_state, nickname)
+            new_game_state = close_open_squares(game_state)
             cache.set(f"game:{game_code}", new_game_state)
             async_to_sync(channel_layer.group_send)(str(game_code), {"type": "Update_Game", "data": new_game_state})
         except CommandFailed:
@@ -80,7 +80,7 @@ def command_validator(message: str) -> list:
     return [True, cmd]  # Tell the runner that the message was a command
 
 
-async def input_handler(data: dict) -> None:
+async def input_handler(data: dict) -> list[bool]:
     """
     Main chat handler
 
@@ -92,7 +92,6 @@ async def input_handler(data: dict) -> None:
 
     for i in message.lower().split():
         if i in commands:
-            is_command = True
             validator_response = command_validator(message)  # Validates if the message is a command
 
             if not validator_response[0]:
