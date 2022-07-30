@@ -6,7 +6,7 @@ from rest_framework.decorators import (
 from rest_framework.response import Response
 
 from .game_handlers.game_logic import (
-    NicknameTaken, add_member_to_game, create_game
+    GameStarted, NicknameTaken, add_member_to_game, create_game
 )
 
 
@@ -23,7 +23,7 @@ def create_or_join(request):
         if game_state:
             try:
                 add_member_to_game(game_state, nick_name)
-            except NicknameTaken:
+            except (NicknameTaken, GameStarted):
                 return Response(status=status.HTTP_409_CONFLICT)
 
             cache.set(f"game:{game_code}", game_state)
