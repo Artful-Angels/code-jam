@@ -2,7 +2,7 @@ from asgiref.sync import async_to_sync, sync_to_async
 from channels.layers import get_channel_layer
 from django.core.cache import cache
 
-from .game_logic import delete_square, roll_winner
+from .game_logic import CommandFailed, delete_square, roll_winner
 
 channel_layer = get_channel_layer()
 
@@ -16,37 +16,30 @@ def command_handler(data: dict) -> None:
 
     For each command there will be a handler
     """
-    print("command_handler Called 3")
-    cmd = data["cmd"]
     nickname = data["username"]
+    cmd = data["cmd"]
     game_code = data["game_code"]
-    # print(data)
-    # print(type(game_code))
     game_state = cache.get(f"game:{game_code}")
     if cmd == "delete":
-        print("if statment done 4")
+        if not game_state["players"][nickname]["is_alive"]:
+            return False
         # here the (delete) command logic will be
         # in any error case return False
-        # try:
-        new_game_state = delete_square(game_state, nickname)
-        cache.set(f"game:{game_code}", new_game_state)
-        print("cache set with changes 7")
-        async_to_sync(channel_layer.group_send)(str(game_code), {"type": "Update_Game", "data": new_game_state})
-        # except:
-        #     return False
-
-        # print("changing the game status based on the delete command")
+        try:
+            new_game_state = delete_square(game_state, nickname)
+            cache.set(f"game:{game_code}", new_game_state)
+            async_to_sync(channel_layer.group_send)(str(game_code), {"type": "Update_Game", "data": new_game_state})
+        except CommandFailed:
+            return False
     elif cmd == "winner":
         # here the (winner) command logic will be
         # in any error case return False
-        # try:
-        game_state = roll_winner(game_state, nickname)
-        cache.set(f"game:{game_code}", new_game_state)
-        async_to_sync(channel_layer.group_send)(game_code, {"type": "Update_Game", "data": new_game_state})
-        # except:
-        #     return False
-        # print("changing the game status based on the winner command")
-
+        try:
+            new_game_state = roll_winner(game_state, nickname)
+            cache.set(f"game:{game_code}", new_game_state)
+            async_to_sync(channel_layer.group_send)(str(game_code), {"type": "Update_Game", "data": new_game_state})
+        except CommandFailed:
+            return False
     return True
 
 
@@ -82,7 +75,6 @@ async def input_handler(data: dict) -> None:
     If the function is a command, run it
     If it isn't, pass the message to the message handler
     """
-    print("input_handler Called 2")
     message = data["message"]
     is_command = False
 

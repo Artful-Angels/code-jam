@@ -15,6 +15,12 @@ class NicknameTaken(ValueError):
     pass
 
 
+class CommandFailed(ValueError):
+    """Handles what to do if command function failed to operate"""
+
+    pass
+
+
 def number_of_mines(width: int, height: int) -> int:
     """Calculates the number of mines there should be by the height and width"""
     lower = (width * height) // 5
@@ -24,13 +30,9 @@ def number_of_mines(width: int, height: int) -> int:
 
 def _generate_mines(mines: int, width: int, height: int) -> dict:
     _mine_state = {
-        dumps([x, y]): {
-            "coordinates": (x, y),
-            "is_open": False,
-            "is_mine": False,
-            "adjacent_mines": 0
-        }
-        for y in range(height) for x in range(width)
+        dumps([x, y]): {"coordinates": (x, y), "is_open": False, "is_mine": False, "adjacent_mines": 0}
+        for y in range(height)
+        for x in range(width)
     }
 
     for mine in range(mines):
@@ -94,7 +96,6 @@ def _remove_mines(game_state: dict, x: int, y: int):
 
 
 def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
-    print("square_clicked called 6")
     square = game_state["squares"][dumps([x, y])]
 
     if not game_state["players"][nickname]["is_alive"]:
@@ -139,11 +140,8 @@ def _is_won(game_state: dict) -> bool:
 def delete_square(game_state: dict, nickname: str) -> dict:
 
     squares = game_state["squares"]
-    # print(squares)
     safe_squares = [square for square in squares if not squares[square]["is_mine"]]
-    # print(safe_squares)
     closed_squares = [square for square in safe_squares if not squares[square]["is_open"]]
-    # print(closed_squares)
     deleted_square = choice(closed_squares)
 
     square_clicked(game_state, nickname, *loads(deleted_square))
@@ -152,7 +150,6 @@ def delete_square(game_state: dict, nickname: str) -> dict:
 
 
 def roll_winner(game_state: dict, nickname: str) -> dict:
-
     players = game_state["players"]
 
     if players[nickname]["chanced_win"] or nickname not in players:
@@ -196,11 +193,7 @@ def add_member_to_game(game_state: dict, nickname: str) -> None:
     if nickname in game_state["players"]:
         raise NicknameTaken()
     else:
-        game_state["players"][nickname] = {
-            "nickname": nickname,
-            "is_alive": True,
-            "chanced_win": False
-        }
+        game_state["players"][nickname] = {"nickname": nickname, "is_alive": True, "chanced_win": False}
 
 
 def eliminate_player(game_state: dict, nickname: str) -> None:
