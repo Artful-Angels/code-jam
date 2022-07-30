@@ -19,7 +19,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.channel_name,
         )
         # Checking game and the game plysers
-        game_state = cache.get(f"game:{self.game_id}")
+        game_state = await cache.aget(f"game:{self.game_id}")
         game_players = game_state["players"]
         if game_state:
             if len(game_players.keys()) >= 2:
@@ -49,11 +49,11 @@ class GameConsumer(AsyncWebsocketConsumer):
             player_name = data["player_name"]
             click_at = data["click_at"]  # should = list or tuple
 
-            game_state = cache.get(f"game:{self.game_id}")
+            game_state = await cache.aget(f"game:{self.game_id}")
             if game_state:
                 try:
                     square_clicked(game_state, player_name, *click_at)
-                    cache.set(f"game:{self.game_id}", game_state)
+                    await cache.aset(f"game:{self.game_id}", game_state)
                     # Hint For Improve :
                     # - Now i am sending the whole game_state at each click after update it
                     # - That will be heavy on the frontend and on the WS connection
