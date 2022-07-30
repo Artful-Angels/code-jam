@@ -169,6 +169,23 @@ def roll_winner(game_state: dict, nickname: str) -> dict:
     return game_state
 
 
+def new_life(game_state: dict, nickname: str) -> dict:
+    players = game_state["players"]
+
+    if not players[nickname]["is_alive"]:
+        game_state["players"][nickname]["is_alive"] = True
+    return game_state
+
+
+def close_opend_squares(game_state: dict, nickname: str) -> dict:
+    squares = game_state["squares"]
+    for square in squares:
+        if squares[square]["is_open"]:
+            game_state["squares"][square]["is_open"] = False
+
+    return game_state
+
+
 def create_game(game_code: int, mines: int = 100, width: int = 30, height: int = 16):
     _mine_state = _generate_mines(mines, width, height)
 
