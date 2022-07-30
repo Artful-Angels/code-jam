@@ -5,7 +5,7 @@
       :key="key"
       v-bind="square"
       :isFlagged="flaggedSquares[key]"
-      @toggleFlag="(coordinates) => toggleFlag(coordinates)"
+      @toggleFlag="(coordinates) => toggleFlag(key)"
       @openSquare="(coordinates) => $emit('openSquare', coordinates)"
     />
   </div>
@@ -27,6 +27,7 @@ defineEmits(["openSquare"]);
 let flaggedSquares = reactive({});
 
 function toggleFlag(coordinates) {
+  console.log(coordinates)
   if (flaggedSquares.hasOwnProperty(coordinates)) {
     flaggedSquares[coordinates] = flaggedSquares[coordinates] === false;
   } else {
