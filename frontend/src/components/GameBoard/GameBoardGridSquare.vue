@@ -7,11 +7,9 @@
   >
     <Flag v-if="isFlagged && !is_open" />
     <Mine v-else-if="is_open && is_mine" />
-    <span
-      v-else-if="is_open"
-      class="my-[-10px] dark:text-gray-300"
-      >{{ adjacent_mines ? adjacent_mines : "" }}</span
-    >
+    <span v-else-if="is_open" class="my-[-10px] dark:text-gray-300">{{
+      adjacent_mines ? adjacent_mines : ""
+    }}</span>
   </button>
 </template>
 
@@ -48,7 +46,6 @@ const props = defineProps({
     default: 0,
   },
 });
-
 
 function openSquare() {
   if (!props.isFlagged && !props.is_open) {

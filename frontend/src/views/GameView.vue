@@ -2,7 +2,9 @@
   <div class="grid grid-cols-7 h-full">
     <main class="col-span-5 bg-white dark:bg-slate-900 p-10">
       <GameBoard
+        :gameCode="gameCode"
         :gameState="gameState"
+        :gameStarted="gameStarted"
         @openSquare="
           (coordinates) => {
             openSquare(coordinates);
@@ -21,7 +23,7 @@
 </template>
 
 <script setup>
-import { inject, reactive } from "vue";
+import { inject, reactive, ref } from "vue";
 import MessageView from "@/components/Messaging/MessageView.vue";
 import GameBoard from "@/components/GameBoard/GameBoard.vue";
 
@@ -37,6 +39,7 @@ const props = defineProps({
 
 let messages = reactive([]);
 let gameState = reactive({ value: {} });
+let gameStarted = ref(false);
 
 const gameSocket = new WebSocket(
   `ws://localhost:8000/ws/game/${props.gameCode}/`
@@ -50,6 +53,7 @@ gameSocket.addEventListener("message", function (event) {
       break;
     case "start_game":
       gameState.value = data.data;
+      gameStarted.value = true;
       break;
     case "update_game":
       gameState.value = data.data;
