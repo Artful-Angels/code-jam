@@ -166,6 +166,7 @@ def eliminate_player(game_state: dict, nickname: str) -> None:
     game_state["players"][nickname]["is_alive"] = False
 
 
+# this is for testing
 def _reveal_board(game_state: dict):
     print("\t", end="")
     for num in range(game_state["width"]):
