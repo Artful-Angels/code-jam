@@ -21,10 +21,20 @@ class CommandFailed(ValueError):
     pass
 
 
-class PlayersNotTurn(ValueError):
-    """Handles what to do if it's not the player turn"""
+class NotPlayersTurn(ValueError):
+    """Handles what to do if it's not the player's turn"""
 
     pass
+
+
+class GameStarted(Exception):
+    """Handles what to do if a player tries to join when the game has started"""
+
+    pass
+
+
+class GameFinished(Exception):
+    """Handles what to do if a player tries to click a square when it has finished"""
 
 
 def number_of_mines(width: int, height: int) -> int:
@@ -102,21 +112,28 @@ def _remove_mines(game_state: dict, x: int, y: int):
 
 
 def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
-    square = game_state["squares"][dumps([x, y])]
 
     if not game_state["players"][nickname]["is_alive"]:
-        return PlayerDead()
-    if not game_state["players"][nickname]["his_turn"]:
-        return PlayersNotTurn()
+        raise PlayerDead()
+    elif game_state["is_finished"]:
+        raise GameFinished()
+    elif game_state["turn_id"] != game_state["players"][nickname]["id"]:
+        raise NotPlayersTurn()
+    elif game_state["turn_id"] == len(game_state["players"]):
+        game_state["turn_id"] = 1
+    else:
+        game_state["turn_id"] += 1
 
-    elif not game_state["is_started"]:
+    square = game_state["squares"][dumps([x, y])]
+
+    if not game_state["is_started"]:
         game_state["is_started"] = True
         _remove_mines(game_state, x, y)
         for x, y in _get_coords(game_state, x, y):
             if game_state["squares"][dumps([x, y])]["adjacent_mines"] == 0:
-                _reveal_zeros(game_state, x, y)
+                _reveal_zeros(game_state, x, y, reveal_all=True)
             else:
-                _reveal_zeros(game_state, x, y, False)
+                _reveal_zeros(game_state, x, y, reveal_all=False)
     elif game_state["squares"][dumps([x, y])]["is_mine"]:
         square["is_open"] = True
         eliminate_player(game_state, nickname)
@@ -179,16 +196,20 @@ def roll_winner(game_state: dict, nickname: str) -> dict:
 
 
 def new_life(game_state: dict, nickname: str) -> dict:
+
     players = game_state["players"]
 
     if not players[nickname]["is_alive"]:
         game_state["players"][nickname]["is_alive"] = True
+
     return game_state
 
 
-def close_opend_squares(game_state: dict, nickname: str) -> dict:
+def close_open_squares(game_state: dict) -> dict:
+
     squares = game_state["squares"]
-    for square in squares:
+
+    for square in game_state["squares"]:
         if squares[square]["is_open"]:
             game_state["squares"][square]["is_open"] = False
 
@@ -202,10 +223,11 @@ def create_game(game_code: int, mines: int = 100, width: int = 30, height: int =
         "game_code": game_code,
         "is_started": False,
         "is_finished": False,
+        "turn_id": 1,
         "width": width,
         "height": height,
         "players": {},
-        "squares": _mine_state,
+        "squares": _mine_state
     }
 
     for coord in _mine_state:
@@ -216,47 +238,20 @@ def create_game(game_code: int, mines: int = 100, width: int = 30, height: int =
 
 
 def add_member_to_game(game_state: dict, nickname: str) -> None:
-    players_number = len(game_state["players"].keys())
-    if nickname in game_state["players"]:
+
+    if game_state["is_started"]:
+        raise GameStarted()
+    elif nickname in game_state["players"]:
         raise NicknameTaken()
-    else:
-        if players_number == 0:
-            game_state["players"][nickname] = {
-                "nickname": nickname,
-                "is_alive": True,
-                "chanced_win": False,
-                "his_turn": True,
-                "sequence": 1,
-            }
-        else:
-            game_state["players"][nickname] = {
-                "nickname": nickname,
-                "is_alive": True,
-                "chanced_win": False,
-                "his_turn": False,
-                "sequence": players_number + 1,
-            }
+
+    game_state["players"][nickname] = {
+        "id": len(game_state["players"]) + 1,
+        "nickname": nickname,
+        "is_alive": True,
+        "chanced_win": False
+    }
 
 
 def eliminate_player(game_state: dict, nickname: str) -> None:
+
     game_state["players"][nickname]["is_alive"] = False
-
-
-# this is for testing
-def _reveal_board(game_state: dict):
-    print("\t", end="")
-    for num in range(game_state["width"]):
-        print(num % 10, end=" ")
-    print("\n")
-    for row in range(game_state["height"]):
-        print(row % 10, end="\t")
-        for col in range(game_state["width"]):
-            square = game_state["squares"][(col, row)]
-            if square["is_open"]:
-                if square["is_mine"]:
-                    print("M", end=" ")
-                else:
-                    print(square["adjacent_mines"], end=" ")
-            else:
-                print("?", end=" ")
-        print()
