@@ -5,6 +5,7 @@
       :key="key"
       v-bind="square"
       :isFlagged="flaggedSquares[key]"
+      :disabled="!isAlive"
       @toggleFlag="(coordinates) => toggleFlag(key)"
       @openSquare="(coordinates) => $emit('openSquare', coordinates)"
     />
@@ -20,6 +21,11 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  isAlive: {
+    type: Boolean,
+    required: false,
+    default: true,
+  }
 });
 
 defineEmits(["openSquare"]);

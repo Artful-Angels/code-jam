@@ -4,6 +4,7 @@
     :class="{ 'bg-gray-100 dark:bg-slate-800': !is_open }"
     @click="openSquare"
     @contextmenu.prevent="$emit('toggleFlag', coordinates)"
+    :disabled="disabled || is_open"
   >
     <Flag v-if="isFlagged && !is_open" />
     <Mine v-else-if="is_open && is_mine" />
@@ -36,6 +37,11 @@ const props = defineProps({
     default: false,
   },
   isFlagged: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  disabled: {
     type: Boolean,
     required: false,
     default: false,

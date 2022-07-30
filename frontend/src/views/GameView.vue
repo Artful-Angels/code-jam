@@ -5,6 +5,7 @@
         :gameCode="gameCode"
         :gameState="gameState"
         :gameStarted="gameStarted"
+        :nickname="nickname"
         @openSquare="
           (coordinates) => {
             openSquare(coordinates);

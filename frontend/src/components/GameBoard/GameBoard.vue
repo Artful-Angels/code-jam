@@ -27,6 +27,7 @@
     <GameBoardGrid
       v-if="gameStarted"
       :squares="gameState.value?.squares || {}"
+      :isAlive="alivePlayers.includes(nickname)"
       @openSquare="(coordinates) => $emit('openSquare', coordinates)"
     />
     <div v-else>
@@ -57,6 +58,10 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: false,
+  },
+  nickname: {
+    type: String,
+    required: true,
   },
 });
 
