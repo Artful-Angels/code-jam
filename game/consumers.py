@@ -4,7 +4,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.cache import cache
 
-from .game_handlers.game_logic import square_clicked
+from .game_handlers.game_logic import PlayerDead, square_clicked
 from .game_handlers.message_handler import input_handler
 
 
@@ -51,8 +51,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
             game_state = cache.get(f"game:{self.game_id}")
             if game_state:
-                if game_state["players"][player_name]["is_alive"]:
-
+                try:
                     square_clicked(game_state, player_name, *click_at)
                     cache.set(f"game:{self.game_id}", game_state)
                     # Hint For Improve :
@@ -61,6 +60,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                     # - Maybe send just the changes only will be better
 
                     await self.channel_layer.group_send(self.game_id, {"type": "Update_Game", "data": game_state})
+                except PlayerDead:
+                    pass
 
     # Handlers
     # Receive message from group
