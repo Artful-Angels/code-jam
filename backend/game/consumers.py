@@ -80,7 +80,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     # Update Game status Handler
     async def Update_Game(self, event):
-        print("send_updated Called 8")
         data = event["data"]
         # Send message to WebSocket connection on the frontend
         await self.send(text_data=json.dumps({"method": "update_game", "data": data}))
@@ -116,7 +115,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "username": username,
             "game_code": game_code,
         }
-        print("received data 1")
         # Send the message to the game-chat group based on the Message type
         is_regular_message = await input_handler(data)
         date_now = datetime.datetime.now().strftime("%I:%M %p")
