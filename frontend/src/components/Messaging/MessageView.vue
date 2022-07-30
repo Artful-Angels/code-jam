@@ -13,7 +13,7 @@
           :nickname="nickname"
         />
       </div>
-      <div class="mt-4 fixed bottom-6">
+      <div class="mt-4 fixed bottom-6" style="width: calc(28.57142857% - 26px)">
         <input
           type="text"
           ref="messageField"
