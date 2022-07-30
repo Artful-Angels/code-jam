@@ -119,10 +119,19 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
         raise GameFinished()
     elif game_state["turn_id"] != game_state["players"][nickname]["id"]:
         raise NotPlayersTurn()
-    elif game_state["turn_id"] == len(game_state["players"]):
-        game_state["turn_id"] = 1
-    else:
-        game_state["turn_id"] += 1
+
+    players = game_state["players"]
+    alive_players = [player for player in players if players[player]["is_alive"]]
+
+    if len(alive_players) != 1:
+        current_player_index = alive_players.index(nickname)
+
+        if current_player_index == len(alive_players) - 1:
+            next_player = alive_players[0]
+        else:
+            next_player = alive_players[current_player_index + 1]
+
+        game_state["turn_id"] = players[next_player]["id"]
 
     square = game_state["squares"][dumps([x, y])]
 
