@@ -132,7 +132,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
         else:
             cmd = is_regular_message[1]
-            message = f"Congrats!! You hit the [{cmd}] command!"
             # Command Message => Send a notification
             await self.channel_layer.group_send(
                 self.room_group_name,
@@ -140,6 +139,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "type": "send_notification",
                     "message": message,
                     "username": username,
+                    "cmd": cmd,
                     "date": date_now,
                 },
             )
@@ -167,12 +167,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Notification Handler
     async def send_notification(self, event):
         message = event["message"]
+        username = event["username"]
+        cmd = event["cmd"]
         date = event["date"]
         await self.send(
             text_data=json.dumps(
                 {
                     "method": "NTF",
                     "message": message,
+                    "username": username,
+                    "cmd": cmd,
                     "date": date,
                 }
             )
