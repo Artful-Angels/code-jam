@@ -27,7 +27,6 @@ defineEmits(["openSquare"]);
 let flaggedSquares = reactive({});
 
 function toggleFlag(coordinates) {
-  console.log(coordinates)
   if (flaggedSquares.hasOwnProperty(coordinates)) {
     flaggedSquares[coordinates] = flaggedSquares[coordinates] === false;
   } else {
