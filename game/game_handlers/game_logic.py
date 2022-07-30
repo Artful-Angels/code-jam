@@ -199,7 +199,7 @@ def roll_winner(game_state: dict, nickname: str) -> dict:
     if chance == 1:
         for player in alive_players:
             if nickname != player:
-                game_state[player]["is_alive"] = False
+                game_state["players"][player]["is_alive"] = False
 
     return game_state
 
