@@ -1,5 +1,5 @@
 from itertools import product
-from json import dumps
+from json import dumps, loads
 from random import choice, randint
 
 
@@ -94,6 +94,7 @@ def _remove_mines(game_state: dict, x: int, y: int):
 
 
 def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
+    print("square_clicked called 6")
     square = game_state["squares"][dumps([x, y])]
 
     if not game_state["players"][nickname]["is_alive"]:
@@ -138,11 +139,14 @@ def _is_won(game_state: dict) -> bool:
 def delete_square(game_state: dict, nickname: str) -> dict:
 
     squares = game_state["squares"]
-    safe_squares = {square for square in squares if not squares[square]["is_mine"]}
-    closed_squares = {square for square in safe_squares if not squares[square]["is_open"]}
+    # print(squares)
+    safe_squares = [square for square in squares if not squares[square]["is_mine"]]
+    # print(safe_squares)
+    closed_squares = [square for square in safe_squares if not squares[square]["is_open"]]
+    # print(closed_squares)
     deleted_square = choice(closed_squares)
 
-    square_clicked(game_state, nickname, *deleted_square["coordinates"])
+    square_clicked(game_state, nickname, *loads(deleted_square))
 
     return game_state
 

@@ -1,4 +1,4 @@
-from asgiref.sync import async_to_sync
+from asgiref.sync import async_to_sync, sync_to_async
 from channels.layers import get_channel_layer
 from django.core.cache import cache
 
@@ -9,23 +9,29 @@ channel_layer = get_channel_layer()
 commands = ["delete", "winner"]  # list of commands
 
 
+@sync_to_async
 def command_handler(data: dict) -> None:
     """
     Handles the commands
 
     For each command there will be a handler
     """
+    print("command_handler Called 3")
     cmd = data["cmd"]
     nickname = data["username"]
     game_code = data["game_code"]
+    # print(data)
+    # print(type(game_code))
     game_state = cache.get(f"game:{game_code}")
     if cmd == "delete":
+        print("if statment done 4")
         # here the (delete) command logic will be
         # in any error case return False
         # try:
         new_game_state = delete_square(game_state, nickname)
         cache.set(f"game:{game_code}", new_game_state)
-        async_to_sync(channel_layer.group_send)(game_code, {"type": "Update_Game", "data": game_state})
+        print("cache set with changes 7")
+        async_to_sync(channel_layer.group_send)(str(game_code), {"type": "Update_Game", "data": new_game_state})
         # except:
         #     return False
 
@@ -36,7 +42,7 @@ def command_handler(data: dict) -> None:
         # try:
         game_state = roll_winner(game_state, nickname)
         cache.set(f"game:{game_code}", new_game_state)
-        async_to_sync(channel_layer.group_send)(game_code, {"type": "Update_Game", "data": game_state})
+        async_to_sync(channel_layer.group_send)(game_code, {"type": "Update_Game", "data": new_game_state})
         # except:
         #     return False
         # print("changing the game status based on the winner command")
@@ -69,13 +75,14 @@ def command_validator(message: str) -> list:
     return [True, cmd]  # Tell the runner that the message was a command
 
 
-def input_handler(data: dict) -> None:
+async def input_handler(data: dict) -> None:
     """
     Main chat handler
 
     If the function is a command, run it
     If it isn't, pass the message to the message handler
     """
+    print("input_handler Called 2")
     message = data["message"]
     is_command = False
 
@@ -88,7 +95,7 @@ def input_handler(data: dict) -> None:
                 return [True]
 
             data["cmd"] = validator_response[1]
-            command_result = command_handler(data)
+            command_result = await command_handler(data)
             if command_result:
                 return [False, validator_response[1]]
             else:

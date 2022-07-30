@@ -22,7 +22,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         game_state = await cache.aget(f"game:{self.game_id}")
         game_players = game_state["players"]
         if game_state:
-            if len(game_players.keys()) >= 2:
+            if len(game_players.keys()) >= 1:
                 # Start The game and Send the Game Status
                 await self.channel_layer.group_send(self.game_id, {"type": "Send_Game", "data": game_state})
             else:
@@ -80,6 +80,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     # Update Game status Handler
     async def Update_Game(self, event):
+        print("send_updated Called 8")
         data = event["data"]
         # Send message to WebSocket connection on the frontend
         await self.send(text_data=json.dumps({"method": "update_game", "data": data}))
@@ -115,8 +116,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "username": username,
             "game_code": game_code,
         }
+        print("received data 1")
         # Send the message to the game-chat group based on the Message type
-        is_regular_message = input_handler(data)
+        is_regular_message = await input_handler(data)
         date_now = datetime.datetime.now().strftime("%I:%M %p")
 
         if is_regular_message[0] is True:
