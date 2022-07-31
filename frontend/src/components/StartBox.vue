@@ -102,6 +102,10 @@ function submitGame(nickname, gameCode) {
         showError(
           "A player has already joined with that name. Please choose a different one."
         );
+      } else if (response.response.status === 400) {
+        showError("Can't join. The game has already started!");
+      } else {
+        showError("Something went wrong!");
       }
     });
 }
