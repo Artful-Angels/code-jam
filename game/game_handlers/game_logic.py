@@ -217,17 +217,26 @@ def roll_winner(game_state: dict, nickname: str) -> dict:
 def new_life(game_state: dict, nickname: str) -> dict:
 
     players = game_state["players"]
-    alive_players = [player for player in players if players[player]["is_alive"]]
-    if not players[nickname]["is_alive"]:
+
+    if not players[nickname]["is_alive"] and not players[nickname]["revived"]:
         game_state["players"][nickname]["is_alive"] = True
         game_state["is_finished"] = False
-    if len(alive_players) == 0:
+        players[nickname]["revived"] = True
+
+    alive_players = [player for player in players if players[player]["is_alive"]]
+
+    if len(alive_players) == 1 and players[nickname]["is_alive"]:
         game_state["turn_id"] = players[nickname]["id"]
+
     return game_state
 
 
-def close_open_squares(game_state: dict) -> dict:
+def close_open_squares(game_state: dict, nickname: str) -> dict:
 
+    if game_state["closed_used"] or game_state["players"][nickname]["is_alive"]:
+        return game_state
+
+    game_state["closed_used"] = True
     squares = game_state["squares"]
 
     for square in game_state["squares"]:
@@ -245,6 +254,7 @@ def create_game(game_code: int, mines: int = 100, width: int = 30, height: int =
         "is_started": False,
         "is_finished": False,
         "turn_id": 1,
+        "closed_used": False,
         "width": width,
         "height": height,
         "players": {},
@@ -269,7 +279,8 @@ def add_member_to_game(game_state: dict, nickname: str) -> None:
         "id": len(game_state["players"]) + 1,
         "nickname": nickname,
         "is_alive": True,
-        "chanced_win": False
+        "chanced_win": False,
+        "revived": False
     }
 
 

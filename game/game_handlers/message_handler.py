@@ -48,7 +48,7 @@ def command_handler(data: dict) -> bool:
             return False
     elif cmd == "close":
         try:
-            new_game_state = close_open_squares(game_state)
+            new_game_state = close_open_squares(game_state, nickname)
             cache.set(f"game:{game_code}", new_game_state)
             async_to_sync(channel_layer.group_send)(str(game_code), {"type": "Update_Game", "data": new_game_state})
         except CommandFailed:
