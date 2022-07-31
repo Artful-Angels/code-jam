@@ -36,6 +36,10 @@
         :game-code="gameCode"
       />
     </div>
+    <div class="mt-5 text-center uppercase text-xl font-mono font-semibold">
+      <p v-if="isAlive" class="text-blue-600">Alive</p>
+      <p v-else class="text-red-600">Dead</p>
+    </div>
   </div>
 </template>
 
@@ -77,6 +81,11 @@ const deadPlayers = computed(() => {
   return Object.keys(props.gameState.value.players).filter(
     (playerName) => !props.gameState.value.players[playerName].is_alive
   );
+});
+
+const isAlive = computed(() => {
+  if (props.gameState.value?.players === undefined) return true;
+  return props.gameState.value.players[props.nickname].is_alive;
 });
 
 watch(deadPlayers, (newValue, oldValue) => {
