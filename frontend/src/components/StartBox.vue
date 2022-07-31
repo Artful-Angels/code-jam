@@ -55,6 +55,9 @@
           </button>
         </div>
       </form>
+      <div class="w-full text-center font-mono uppercase  dark:text-gray-200 dark:hover:text-gray-300" style="margin-top: 15px">
+        <a href="/commands">Read the list of commands</a>
+      </div>
     </main>
   </div>
 </template>

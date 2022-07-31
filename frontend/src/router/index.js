@@ -17,6 +17,11 @@ const router = createRouter({
         gameCode: Number(route.params.gameCode),
       }),
     },
+    {
+      path: "/commands",
+      name: "commands",
+      component: () => import("../views/CommandsView.vue"),
+    }
   ],
 });
 
