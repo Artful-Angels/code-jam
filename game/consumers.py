@@ -26,16 +26,14 @@ class GameConsumer(AsyncWebsocketConsumer):
         if game_state is None:
             return
 
-        game_players = game_state["players"]
-
-        if len(game_players.keys()) >= 1:
+        if game_state["is_started"]:
             # Start The game and Send the Game Status
             await self.channel_layer.group_send(self.game_id, {"type": "Send_Game", "data": game_state})
         else:
             # Send The Game Players Status
             await self.channel_layer.group_send(
                 self.game_id,
-                {"type": "Update_Members", "data": game_players},
+                {"type": "Update_Members", "data": game_state["players"]},
             )
 
         await self.accept()
