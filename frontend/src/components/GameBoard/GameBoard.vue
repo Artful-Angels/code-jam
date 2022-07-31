@@ -36,9 +36,13 @@
         :game-code="gameCode"
       />
     </div>
-    <div v-if="gameStarted" class="mt-5 text-center uppercase text-xl font-mono font-semibold">
-      <p v-if="isAlive" class="text-blue-600">Alive</p>
-      <p v-else class="text-red-600">Dead</p>
+    <div v-if="gameStarted" class="mt-5 flex justify-between uppercase text-xl font-mono font-semibold">
+      <span v-if="isAlive" class="text-left text-blue-600">Alive</span>
+      <span v-else class="text-left text-red-600">Dead</span>
+      <span v-if="!gameState.value.is_finished" class="text-right dark:text-gray-200" :class="{ 'text-blue-600 dark:text-blue-600': nickname === playerTurn }">
+        {{ nickname === playerTurn ? 'Your' : `${playerTurn}'s` }}
+        turn
+      </span>
     </div>
   </div>
 </template>
@@ -87,6 +91,18 @@ const isAlive = computed(() => {
   if (props.gameState.value?.players === undefined) return true;
   return props.gameState.value.players[props.nickname].is_alive;
 });
+
+const playerTurn = computed(() => {
+  if (props.gameState.value?.turn_id === undefined) return undefined;
+
+  let player = undefined;
+  Object.keys(props.gameState.value.players).forEach((playerName) => {
+    if (props.gameState.value.players[playerName].id === props.gameState.value.turn_id) {
+      player = playerName;
+    }
+  });
+  return player
+})
 
 watch(deadPlayers, (newValue, oldValue) => {
   if (oldValue.length !== newValue.length) {
