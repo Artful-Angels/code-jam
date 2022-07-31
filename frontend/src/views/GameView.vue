@@ -64,6 +64,19 @@ gameSocket.addEventListener("message", function (event) {
       break;
     case "update_game":
       gameState.value = data.data;
+      if (data.data.is_finished) {
+        systemMessage("Game has finished 🎉")
+
+        const alivePlayers = Object.keys(data.data.players).filter(
+          (playerName) => data.data.players[playerName].is_alive
+        )
+        if (alivePlayers.length > 0) {
+          systemMessage(`The following player${alivePlayers.length > 1 ? 's' : ''} survived:`)
+          alivePlayers.forEach((playerName) => {
+            systemMessage(`• ${playerName}`)
+          })
+        }
+      }
       break;
   }
 });
