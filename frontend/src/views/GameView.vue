@@ -64,9 +64,9 @@ gameSocket.addEventListener("message", function (event) {
       gameState.value = data.data;
       gameStarted.value = true;
       if (!tryFinish()) {
-        if (data.data.is_started === false) {
-          systemMessage("Game has started!");
-        }
+        // if (data.data.is_started === false) {
+          // systemMessage("Game has started!");
+        // }
       }
       break;
     case "update_game":
