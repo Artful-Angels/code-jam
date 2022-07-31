@@ -85,13 +85,13 @@ function generateGameCode() {
 function submitGame(nickname, gameCode) {
   axios
     .post("http://localhost:8000/game/createorjoin/", {
-      nickname: nickname,
+      nickname: cleanupNickname(nickname),
       game_code: gameCode,
     })
     .then((response) => {
       switch (response.status) {
         case 200:
-          startGame(gameCode, nickname);
+          startGame(gameCode, cleanupNickname(nickname));
           break;
         default:
           showError("Unrecognized response!");
@@ -111,7 +111,7 @@ function submitGame(nickname, gameCode) {
 }
 
 function startGame(gameCode, nickname) {
-  $cookies.set("nickname", nickname);
+  $cookies.set("nickname", cleanupNickname(nickname));
   router.push({
     name: "game",
     params: { gameCode: gameCode },
@@ -122,5 +122,9 @@ function showError(text) {
   const error_box = document.getElementById("error-box");
   error_box.innerText = text;
   error_box.removeAttribute("hidden");
+}
+
+function cleanupNickname(nickname) {
+  return nickname.trim().replace(" ", "_");
 }
 </script>
