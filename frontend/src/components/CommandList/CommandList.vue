@@ -21,21 +21,19 @@ import CommandListCommand from "@/components/CommandList/CommandListCommand.vue"
 const commands = [
   {
     name: "delete",
-    description: "Opens a random square on the board",
+    description: "Deletes the cover of a square that is both closed and safe. Counts as a turn and can only be used 5 times per player.",
   },
   {
     name: "close",
-    description: "Closes all squares on the board. Can only be run by a dead player, once per game",
+    description: "Closes all squares. Can only be used once in a game by a dead player.",
   },
   {
     name: "new",
-    description: "Gives the player a new life. Can only be used once per game",
-    isHidden: true,
+    description: "Gives a 1 in the total number of players chance to give a player new life. Can only be used once per player.",
   },
   {
     name: "winner",
-    description: "Gives the player a small chance of winning. Can only be run by a dead player, once per game",
-    isHidden: true,
+    description: "Gives a variable chance to eliminate all other players (although they have a chance of coming back using new). The chance is 1 in twice the number of living players who haven't used the command. Can only be used once per player.",
   },
 ]
 </script>
