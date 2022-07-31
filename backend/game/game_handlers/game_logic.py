@@ -163,6 +163,7 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
     square["is_open"] = True
 
     if _is_won(game_state):
+        print("WON")
         game_state["is_finished"] = True
     elif square["adjacent_mines"] == 0:
         _reveal_zeros(game_state, x, y)
