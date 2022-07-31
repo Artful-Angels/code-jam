@@ -255,7 +255,7 @@ def close_open_squares(game_state: dict, nickname: str) -> dict:
     return game_state
 
 
-def create_game(game_code: int, mines: int = 10, width: int = 30, height: int = 16):
+def create_game(game_code: int, mines: int = 100, width: int = 30, height: int = 16):
     _mine_state = _generate_mines(mines, width, height)
 
     game_state = {
