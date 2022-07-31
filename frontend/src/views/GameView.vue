@@ -14,7 +14,7 @@
         @playerDied="
           (player) => {
             // if not all players are dead, call systemMessage
-            if (alivePlayers.length > 0) {
+            if (alivePlayers.length > 0 and player !== undefined) {
               systemMessage(`${player} has died`);
             }
           }
