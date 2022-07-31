@@ -75,6 +75,8 @@ gameSocket.addEventListener("message", function (event) {
           alivePlayers.forEach((playerName) => {
             systemMessage(`• ${playerName}`)
           })
+        } else {
+          systemMessage("No one survived. Better luck next time!")
         }
       }
       break;
