@@ -186,6 +186,10 @@ def _is_won(game_state: dict) -> bool:
 
 def delete_square(game_state: dict, nickname: str) -> dict:
 
+    if game_state["players"][nickname]["squares_deleted"] == 5:
+        return game_state
+
+    game_state["players"][nickname]["squares_deleted"] += 1
     squares = game_state["squares"]
     safe_squares = [square for square in squares if not squares[square]["is_mine"]]
     closed_squares = [square for square in safe_squares if not squares[square]["is_open"]]
@@ -285,7 +289,8 @@ def add_member_to_game(game_state: dict, nickname: str) -> None:
         "nickname": nickname,
         "is_alive": True,
         "chanced_win": False,
-        "revived": False
+        "revived": False,
+        "squares_deleted": 0,
     }
 
 
