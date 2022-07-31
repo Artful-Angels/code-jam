@@ -220,9 +220,10 @@ def new_life(game_state: dict, nickname: str) -> dict:
     players = game_state["players"]
 
     if not players[nickname]["is_alive"] and not players[nickname]["revived"]:
-        game_state["players"][nickname]["is_alive"] = True
-        game_state["is_finished"] = False
-        players[nickname]["revived"] = True
+        if randint(1, len(players)) == 1:
+            game_state["players"][nickname]["is_alive"] = True
+            game_state["is_finished"] = False
+            players[nickname]["revived"] = True
 
     alive_players = [player for player in players if players[player]["is_alive"]]
 
