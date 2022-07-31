@@ -13,7 +13,10 @@
         "
         @playerDied="
           (player) => {
-            systemMessage(`${player} has died`);
+            // if not all players are dead, call systemMessage
+            if (alivePlayers.length > 0) {
+              systemMessage(`${player} has died`);
+            }
           }
         "
       />
@@ -29,7 +32,7 @@
 </template>
 
 <script setup>
-import { inject, reactive, ref } from "vue";
+import {computed, inject, reactive, ref} from "vue";
 import MessageView from "@/components/Messaging/MessageView.vue";
 import GameBoard from "@/components/GameBoard/GameBoard.vue";
 
@@ -60,28 +63,42 @@ gameSocket.addEventListener("message", function (event) {
     case "start_game":
       gameState.value = data.data;
       gameStarted.value = true;
-      systemMessage("Game has started!");
-      break;
-    case "update_game":
-      gameState.value = data.data;
-      if (data.data.is_finished) {
-        systemMessage("Game has finished 🎉")
-
-        const alivePlayers = Object.keys(data.data.players).filter(
-          (playerName) => data.data.players[playerName].is_alive
-        )
-        if (alivePlayers.length > 0) {
-          systemMessage(`The following player${alivePlayers.length > 1 ? 's' : ''} survived:`)
-          alivePlayers.forEach((playerName) => {
-            systemMessage(`• ${playerName}`)
-          })
-        } else {
-          systemMessage("No one survived. Better luck next time!")
+      if (!tryFinish()) {
+        if (data.data.is_started === false) {
+          systemMessage("Game has started!");
         }
       }
       break;
+    case "update_game":
+      gameState.value = data.data;
+      tryFinish();
+      break;
   }
 });
+
+const alivePlayers = computed(() => {
+  if (gameState.value?.players === undefined) return []
+  return Object.keys(gameState.value.players).filter(
+    (playerName) => gameState.value.players[playerName].is_alive
+  )
+})
+
+function tryFinish() {
+  if (gameState.value?.is_finished === undefined) return
+  if (gameState.value.is_finished) {
+    systemMessage("Game has finished 🎉")
+    console.log(alivePlayers.value);
+    if (alivePlayers.value.length > 0) {
+      systemMessage(`The following player${alivePlayers.value.length > 1 ? 's' : ''} survived:`)
+      alivePlayers.value.forEach((playerName) => {
+        systemMessage(`• ${playerName}`)
+      })
+    } else {
+      systemMessage("No one survived. Better luck next time!")
+    }
+    return true
+  }
+}
 
 const chatSocket = new WebSocket(
   `ws://localhost:8000/ws/chat/${props.gameCode}/${nickname}/`

@@ -36,7 +36,7 @@
         :game-code="gameCode"
       />
     </div>
-    <div class="mt-5 text-center uppercase text-xl font-mono font-semibold">
+    <div v-if="gameStarted" class="mt-5 text-center uppercase text-xl font-mono font-semibold">
       <p v-if="isAlive" class="text-blue-600">Alive</p>
       <p v-else class="text-red-600">Dead</p>
     </div>
