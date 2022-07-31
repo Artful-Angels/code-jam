@@ -23,7 +23,11 @@ def command_handler(data: dict) -> bool:
     cmd = data["cmd"]
     game_code = data["game_code"]
     game_state = cache.get(f"game:{game_code}")
-    if cmd == "delete":
+
+    if game_state["is_finished"]:
+        return False
+
+    elif cmd == "delete":
         if not game_state["players"][nickname]["is_alive"]:
             return False
         try:
