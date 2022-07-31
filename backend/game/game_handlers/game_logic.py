@@ -144,7 +144,6 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
     square = game_state["squares"][dumps([x, y])]
 
     if not game_state["is_started"]:
-        game_state["is_started"] = True
         _remove_mines(game_state, x, y)
         for x, y in _get_coords(game_state, x, y):
             if game_state["squares"][dumps([x, y])]["adjacent_mines"] == 0:
@@ -165,8 +164,11 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
     if _is_won(game_state):
         print("WON")
         game_state["is_finished"] = True
-    elif square["adjacent_mines"] == 0:
+    elif square["adjacent_mines"] == 0 and game_state["is_started"]:
         _reveal_zeros(game_state, x, y)
+
+    if not game_state["is_started"]:
+        game_state["is_started"] = True
 
     return game_state
 
@@ -249,7 +251,7 @@ def close_open_squares(game_state: dict, nickname: str) -> dict:
     return game_state
 
 
-def create_game(game_code: int, mines: int = 10, width: int = 30, height: int = 16):
+def create_game(game_code: int, mines: int = 100, width: int = 30, height: int = 16):
     _mine_state = _generate_mines(mines, width, height)
 
     game_state = {
