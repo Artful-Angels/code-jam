@@ -21,7 +21,7 @@ BugSweeper is a multiplayer minesweeper game made for the Python Discord code ja
 
 - `Winning` You will win in when you are the last person in the game
 
-- `Loosing` You will lose in two circumstances:
+- `Losing` You will lose in two circumstances:
   1. You open a mine
   2. You close the web window
 
@@ -34,8 +34,10 @@ BugSweeper is a multiplayer minesweeper game made for the Python Discord code ja
   <details>
   <summary>List of bugs</summary>
 
-  1. "delete" - Reveals an open and safe square
-  2. "winner" - Chance to kill all other players
+  1. "delete" - Deletes the cover of a square that is both closed and safe. Counts as a turn and can only be used 5 times per player
+  2. "close" - Closes all squares. Can only be used once in a game by a dead player.
+  3. "new" - Gives a 1 in the total number of players chance to give a player new life. Can only be used once per player.
+  4. "winner" - Gives a variable chance to eliminate all other players (although they have a chance of coming back using new). The chance is 1 in twice the number of living players who haven't used the command. Can only be used once per player.
 
   </details>
 </details>
