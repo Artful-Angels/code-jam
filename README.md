@@ -17,15 +17,15 @@ Go to https://bugsweeper.godi.se and choose your nickname!
 
 - `Creating a game` Press "new game" to generate a new game code and press "join".
 
-- `Joining a game` Enter a game code of an existing game (that hasn't started) and press "join".
+- `Joining a game` Enter a game code of an existing game (that hasn't started) and "join".
 
-- `Taking a turn` You can only open **one** square per turn, and the turn will pass on to the next player.
+- `Taking a turn` Turns rotate between living players. You can only open **one** square per turn.
 
-- `Flagging` You can flag unlimited squares in your turn, and it will be only visible to you.
+- `Flagging` You can flag any closed squares. Flags are only visible to you.
 
 - `Winning` If all safe squares are uncovered then all remaining players will win.
 
-- `Losing` You will lose in two circumstances:
+- `Losing` You will die in two circumstances:
   1. You click on a mine, which will then become visible to all other players.
   2. Eliminated through the successful use of the `winner` command (see more below)!
 
@@ -36,8 +36,8 @@ Bugs can be discovered through posting any of the following commands in the chat
 
 - **"delete"** - Deletes the cover of a square that is both closed and safe (thus opening it). Counts as a turn and can only be used 5 times per player.
 - **"close"** - Closes all squares. Can only be used once in a game by a dead player.
-- **"new"** - Gives a 1 in the total number of players chance to give a player new life. Can only be used once per player.
-- **"winner"** - Gives a variable chance to eliminate all other players (although they have a chance of coming back using new). The chance is 1 in twice the number of living players who haven't used the command. Can only be used once per player.
+- **"new"** - Gives a 1 in the number of players chance to give the player new life. Can only be used once per player (and if they're dead).
+- **"winner"** - Gives a variable chance to eliminate all other players (although they have a chance of coming back using "new"). The chance is 1 in twice the number of living players who haven't used the command. Can only be used once per player.
 
 
 ---
@@ -53,5 +53,5 @@ Note: You need to have the desktop Docker app, download it from https://docs.doc
 ## Technologies used
 
 - Django Channels as our websocket library for both the frontend and backend connection.
-- Docker as our main packaging system, which helped us test between different operating systems.
+- Docker as our main packaging system, which helped us work with different operating systems.
 - Vue.js as our main frontend technology.
