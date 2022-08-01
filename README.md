@@ -34,7 +34,7 @@ Go to https://bugsweeper.godi.se and choose your nickname!
 
 Bugs can be discovered through posting any of the following commands in the chat:
 
-- **"delete"** - Deletes the cover of a square that is both closed and safe (thus opening it). Counts as a turn and can only be used 5 times per player.
+- **"delete"** - Deletes the cover of a random square that is both closed and safe (thus opening it). Counts as a turn and can only be used 5 times per player.
 - **"close"** - Closes all squares. Can only be used once in a game by a dead player.
 - **"new"** - Gives a 1 in the number of players chance to give the player new life. Can only be used once per player (and if they're dead).
 - **"winner"** - Gives a variable chance to eliminate all other players (although they have a chance of coming back using "new"). The chance is 1 in twice the number of living players who haven't used the command. Can only be used once per player.
