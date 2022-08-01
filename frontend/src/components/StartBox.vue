@@ -89,7 +89,7 @@ function generateGameCode() {
 
 function submitGame(nickname, gameCode) {
   axios
-    .post(`http://${import.meta.env.VITE_API_BASE_URL}/game/createorjoin/`, {
+    .post(`https://${import.meta.env.VITE_API_BASE_URL}/game/createorjoin/`, {
       nickname: cleanupNickname(nickname),
       game_code: gameCode,
     })
