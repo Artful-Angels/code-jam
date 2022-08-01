@@ -26,7 +26,7 @@
             <label for="game-code" class="sr-only">Game code</label>
             <input
               id="game-code"
-              ref="game-code"
+              ref="gameCodeRef"
               name="game_code"
               type="number"
               autocomplete="off"
@@ -37,7 +37,7 @@
             />
             <a
               href="#"
-              @click="updateGameCode(this.$refs['game-code'])"
+              @click="updateGameCode()"
               style="margin-left: -94px"
               class="font-mono relative z-50 text-blue-600 hover:text-blue-700 dark:hover:text-blue-500"
               >NEW GAME</a
@@ -67,17 +67,19 @@ import LogoV1 from "@/components/logos/LogoV1.vue";
 import LogoV2 from "@/components/logos/LogoV2.vue";
 import axios from "axios";
 import router from "@/router";
-import { inject } from "vue";
+import {inject, ref} from "vue";
 
 const $cookies = inject("$cookies");
 
 let nickname = undefined;
 let gameCode = undefined;
 
-function updateGameCode(element) {
+const gameCodeRef = ref(null);
+
+function updateGameCode() {
   const event = new Event("input");
-  element.value = generateGameCode();
-  element.dispatchEvent(event);
+  gameCodeRef.value.value = generateGameCode();
+  gameCodeRef.value.dispatchEvent(event);
 }
 
 function generateGameCode() {
@@ -87,7 +89,7 @@ function generateGameCode() {
 
 function submitGame(nickname, gameCode) {
   axios
-    .post("http://localhost:8000/game/createorjoin/", {
+    .post(`http://${import.meta.env.VITE_BASE_URL}/game/createorjoin/`, {
       nickname: cleanupNickname(nickname),
       game_code: gameCode,
     })
