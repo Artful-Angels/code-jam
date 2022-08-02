@@ -51,7 +51,7 @@ let gameState = reactive({ value: {} });
 let gameStarted = ref(false);
 
 const gameSocket = new WebSocket(
-  `wss://${import.meta.env.VITE_API_BASE_URL}/ws/game/${props.gameCode}/`
+  `${wsScheme}://${import.meta.env.VITE_API_BASE_URL}/ws/game/${props.gameCode}/`
 );
 gameSocket.addEventListener("message", function (event) {
   let data = JSON.parse(event.data.toString());
@@ -101,7 +101,7 @@ function tryFinish() {
 }
 
 const chatSocket = new WebSocket(
-  `wss://${import.meta.env.VITE_API_BASE_URL}/ws/chat/${props.gameCode}/${nickname}/`
+  `${wsScheme}://${import.meta.env.VITE_API_BASE_URL}/ws/chat/${props.gameCode}/${nickname}/`
 );
 chatSocket.addEventListener("message", function (event) {
   const data = JSON.parse(event.data.toString());
@@ -140,4 +140,6 @@ function openSquare(coordinates) {
     })
   );
 }
+
+const wsScheme = window.location.protocol === "https:" ? "wss" : "ws"
 </script>
