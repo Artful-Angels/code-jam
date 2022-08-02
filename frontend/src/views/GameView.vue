@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import {computed, inject, reactive, ref} from "vue";
+import {computed, inject, onMounted, reactive, ref} from "vue";
 import MessageView from "@/components/Messaging/MessageView.vue";
 import GameBoard from "@/components/GameBoard/GameBoard.vue";
 
@@ -49,6 +49,8 @@ const props = defineProps({
 let messages = reactive([]);
 let gameState = reactive({ value: {} });
 let gameStarted = ref(false);
+
+const wsScheme = window.location.protocol === "https:" ? "wss" : "ws"
 
 const gameSocket = new WebSocket(
   `${wsScheme}://${import.meta.env.VITE_API_BASE_URL}/ws/game/${props.gameCode}/`
@@ -140,6 +142,4 @@ function openSquare(coordinates) {
     })
   );
 }
-
-const wsScheme = window.location.protocol === "https:" ? "wss" : "ws"
 </script>
