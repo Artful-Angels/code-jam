@@ -2,17 +2,44 @@
   <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/65498475/181659011-5d3aa919-1dcf-4507-b443-2d9ca8d25641.svg">
   <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/65498475/180652320-46cf78bb-ecd0-4305-a37c-09fb9bdea69b.svg">
   <img alt="BugSweeper logo" width="500" src="="https://user-images.githubusercontent.com/65498475/181659011-5d3aa919-1dcf-4507-b443-2d9ca8d25641.svg">
-</picture>
+</picture><hr>
 
 A modern Minesweeper game with totally no bugs.
 
 BugSweeper is a multiplayer minesweeper game made for the Python Discord Summer Code Jam 9, with WebSockets as the technology and the theme "it's not a bug, it's a feature".
 
 
----
+## Preview
+
+<note>
+
+**Note**: this readme updates the images to match your system theme (dark or light mode), just like the website.
+
+</note>
+
+### Lobby
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/65498475/182606217-444f7e83-7c92-45e6-9b9b-abe289919a38.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/65498475/182606302-def0c144-e147-4990-95fb-2a188f983a69.png">
+  <img alt="Lobby demo" src="https://user-images.githubusercontent.com/65498475/182605418-a0c26207-5b7c-4849-a649-ec588e68b9f8.png">
+</picture>
+
+### Active game
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/65498475/182603512-134b03f2-1236-4bc2-9e4a-d7deed56cd9a.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/65498475/182604532-8eab598e-d228-43f1-aec8-c312497ec6a1.png">
+  <img alt="Active game demo" src="https://user-images.githubusercontent.com/65498475/182605653-9cc1a8ed-4fb5-4037-9f02-357517f2faa7.png">
+</picture>
 
 
+### Commands list
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/65498475/182605242-4084cf70-3f1a-48fb-b903-59387a6f2213.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/65498475/182605418-a0c26207-5b7c-4849-a649-ec588e68b9f8.png">
+  <img alt="Commands list demo" src="https://user-images.githubusercontent.com/65498475/182605242-4084cf70-3f1a-48fb-b903-59387a6f2213.png">
+</picture>
 
 
 ## How do I play?
@@ -29,7 +56,7 @@ Go to [bugsweeper.godi.se](https://bugsweeper.godi.se) and choose a nickname to 
   2. Eliminated through the successful use of the `winner` command (see more below)!
 
 
-## Bugs
+### Bugs
 
 Bugs can be discovered through posting any of the following commands in the chat:
 
@@ -51,6 +78,8 @@ Note: You need to have the desktop Docker app, download it from https://docs.doc
 
 
 ## Technologies used
+
+The application approximately follows the architecture described in [this Miro board](https://miro.com/app/board/uXjVOj0M0wU=/?share_link_id=644032710468). The frameworks used are as follows:
 
 - Django Channels for the backend, allowing it to communicate over both HTTP and WebSockets
 - Redis for storing data
