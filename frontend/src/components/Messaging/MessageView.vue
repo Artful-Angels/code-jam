@@ -5,7 +5,7 @@
     >
       <h3 class="mt-0">Messages</h3>
     </div>
-    <div class="px-3 scroll-smooth">
+    <div class="px-3 overflow-y-auto pb-4" style="height: calc(100vh - 145px)">
       <div>
         <Message
           v-for="message in messages"
