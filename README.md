@@ -3,8 +3,10 @@
   <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/65498475/180652320-46cf78bb-ecd0-4305-a37c-09fb9bdea69b.svg">
   <img alt="BugSweeper logo" width="500" src="="https://user-images.githubusercontent.com/65498475/181659011-5d3aa919-1dcf-4507-b443-2d9ca8d25641.svg">
 </picture><hr>
-
-A modern Minesweeper game with totally no bugs.
+                                                                                                                                                      
+[![MIT License](https://img.shields.io/github/license/Artful-Angels/code-jam)](https://github.com/Artful-Angels/code-jam/blob/main/LICENSE) [![Linting](https://github.com/Artful-Angels/code-jam/actions/workflows/lint.yaml/badge.svg)](https://github.com/Artful-Angels/code-jam/actions/workflows/lint.yaml) [![Netlify status](https://api.netlify.com/api/v1/badges/5ed196e8-5c53-4afb-a00f-977ce3bcfdf0/deploy-status)](https://app.netlify.com/sites/bugsweeper-dev/deploys)
+                                                                                                                                                     
+A modern minesweeper game with totally no bugs.
 
 BugSweeper is a multiplayer minesweeper game made for the Python Discord Summer Code Jam 9, with WebSockets as the technology and the theme "it's not a bug, it's a feature".
 
