@@ -5,7 +5,7 @@
       :key="key"
       v-bind="square"
       :isFlagged="flaggedSquares[key]"
-      :disabled="!isAlive || is_finished"
+      :disabled="!isAlive || isFinished"
       @toggleFlag="(coordinates) => toggleFlag(key)"
       @openSquare="(coordinates) => $emit('openSquare', coordinates)"
     />
@@ -35,7 +35,9 @@ const props = defineProps({
 
 defineEmits(["openSquare"]);
 
-let flaggedSquares = reactive({});
+let flaggedSquares = reactive(
+  JSON.parse(sessionStorage.getItem("flaggedSquares")) || {}
+);
 
 function toggleFlag(coordinates) {
   if (flaggedSquares.hasOwnProperty(coordinates)) {
@@ -43,5 +45,7 @@ function toggleFlag(coordinates) {
   } else {
     flaggedSquares[coordinates] = true;
   }
+  sessionStorage.setItem("flaggedSquares", JSON.stringify(flaggedSquares));
 }
+
 </script>
