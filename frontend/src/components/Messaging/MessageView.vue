@@ -6,7 +6,7 @@
       <h3 class="mt-0">Messages</h3>
     </div>
     <div class="px-3 overflow-y-auto pb-4" style="height: calc(100vh - 145px)">
-      <div>
+      <div id="messageList">
         <Message
           v-for="message in messages"
           v-bind="message"
@@ -31,7 +31,7 @@
 
 <script setup>
 import Message from "@/components/Messaging/Message.vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 defineEmits(["sendMessage"]);
 
@@ -47,4 +47,18 @@ const props = defineProps({
 });
 
 let userMessage = ref("");
+let messageListElement = ref(undefined);
+
+function scrollToLastMessage() {
+  if (messageListElement.value !== undefined) {
+    messageListElement.value.lastElementChild.scrollIntoView({ behavior: "smooth" })
+  }
+}
+
+onMounted(() => {
+  messageListElement.value = document.getElementById("messageList")
+  messageListElement.value.addEventListener("DOMNodeInserted", () => {
+    scrollToLastMessage()
+  });
+})
 </script>
