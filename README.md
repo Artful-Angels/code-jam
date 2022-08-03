@@ -54,5 +54,5 @@ Note: You need to have the desktop Docker app, download it from https://docs.doc
 
 - Django Channels for the backend, allowing it to communicate over both HTTP and WebSockets
 - Redis for storing data
-- Docker as our main packaging system, which makes development OS-agnostic and simplified the setup process 
+- Docker as our main packaging system, which makes development OS-agnostic and simplified the setup process
 - Vue.js for the frontend
