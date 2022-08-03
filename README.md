@@ -11,6 +11,18 @@ A modern minesweeper game with totally no bugs.
 BugSweeper is a multiplayer minesweeper game made for the Python Discord Summer Code Jam 9, with WebSockets as the technology and the theme "it's not a bug, it's a feature".
 
 
+## Table of contents
+
+- [Preview](#preview)
+  - [Lobby](#lobby)
+  - [Active game](#active-game)
+  - [Commands list](#commands-list)
+- [How to play](#how-to-play)
+  - [Bugs](#bugs)
+- [Dev installation](#dev-installation)
+- [Technologies used](#technologies-used)
+
+
 ## Preview
 
 <note>
@@ -44,7 +56,7 @@ BugSweeper is a multiplayer minesweeper game made for the Python Discord Summer 
 </picture>
 
 
-## How do I play?
+## How to play?
 
 Go to [bugsweeper.godi.se](https://bugsweeper.godi.se) and choose a nickname to get started!
 
