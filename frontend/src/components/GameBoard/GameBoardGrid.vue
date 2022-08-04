@@ -31,12 +31,16 @@ const props = defineProps({
     required: false,
     default: false,
   },
+  gameCode: {
+    type: Number,
+    required: true,
+  },
 });
 
 defineEmits(["openSquare"]);
 
 let flaggedSquares = reactive(
-  JSON.parse(sessionStorage.getItem("flaggedSquares")) || {}
+  JSON.parse(sessionStorage.getItem(`flaggedSquares:${props.gameCode}`)) || {}
 );
 
 function toggleFlag(coordinates) {
@@ -45,7 +49,7 @@ function toggleFlag(coordinates) {
   } else {
     flaggedSquares[coordinates] = true;
   }
-  sessionStorage.setItem("flaggedSquares", JSON.stringify(flaggedSquares));
+  sessionStorage.setItem(`flaggedSquares:${props.gameCode}`, JSON.stringify(flaggedSquares));
 }
 
 </script>

@@ -29,6 +29,7 @@
       :squares="gameState.value?.squares || {}"
       :isAlive="alivePlayers.includes(nickname)"
       :isFinished="gameState.value.is_finished"
+      :gameCode="gameCode"
       @openSquare="(coordinates) => $emit('openSquare', coordinates)"
     />
     <div v-else>
