@@ -21,7 +21,7 @@ const router = createRouter({
       path: "/commands",
       name: "commands",
       component: () => import("../views/CommandsView.vue"),
-    }
+    },
   ],
 });
 

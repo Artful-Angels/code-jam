@@ -55,7 +55,10 @@
           </button>
         </div>
       </form>
-      <div class="w-full text-center font-mono uppercase  dark:text-gray-200 dark:hover:text-gray-300" style="margin-top: 15px">
+      <div
+        class="w-full text-center font-mono uppercase dark:text-gray-200 dark:hover:text-gray-300"
+        style="margin-top: 15px"
+      >
         <a href="/commands">Read the list of commands</a>
       </div>
     </main>
@@ -67,7 +70,7 @@ import LogoV1 from "@/components/logos/LogoV1.vue";
 import LogoV2 from "@/components/logos/LogoV2.vue";
 import axios from "axios";
 import router from "@/router";
-import {inject, ref} from "vue";
+import { inject, ref } from "vue";
 
 const $cookies = inject("$cookies");
 
@@ -89,10 +92,15 @@ function generateGameCode() {
 
 function submitGame(nickname, gameCode) {
   axios
-    .post(`${window.location.protocol}//${import.meta.env.VITE_API_BASE_URL}/game/createorjoin/`, {
-      nickname: cleanupNickname(nickname),
-      game_code: gameCode,
-    })
+    .post(
+      `${window.location.protocol}//${
+        import.meta.env.VITE_API_BASE_URL
+      }/game/createorjoin/`,
+      {
+        nickname: cleanupNickname(nickname),
+        game_code: gameCode,
+      }
+    )
     .then((response) => {
       switch (response.status) {
         case 200:

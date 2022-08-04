@@ -48,14 +48,16 @@ const props = defineProps({
 
 let gameState = reactive({ value: {} });
 let gameStarted = ref(false);
-let messages = reactive(JSON.parse(
-  localStorage.getItem(`messages:${props.gameCode}`)
-) || [])
+let messages = reactive(
+  JSON.parse(localStorage.getItem(`messages:${props.gameCode}`)) || []
+);
 
-const wsScheme = window.location.protocol === "https:" ? "wss" : "ws"
+const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
 
 const gameSocket = new WebSocket(
-  `${wsScheme}://${import.meta.env.VITE_API_BASE_URL}/ws/game/${props.gameCode}/`
+  `${wsScheme}://${import.meta.env.VITE_API_BASE_URL}/ws/game/${
+    props.gameCode
+  }/`
 );
 gameSocket.addEventListener("message", function (event) {
   let data = JSON.parse(event.data.toString());
@@ -69,7 +71,7 @@ gameSocket.addEventListener("message", function (event) {
       gameStarted.value = true;
       if (!tryFinish()) {
         // if (data.data.is_started === false) {
-          // systemMessage("Game has started!");
+        // systemMessage("Game has started!");
         // }
       }
       break;
@@ -81,52 +83,52 @@ gameSocket.addEventListener("message", function (event) {
 });
 
 const alivePlayers = computed(() => {
-  if (gameState.value?.players === undefined) return []
+  if (gameState.value?.players === undefined) return [];
   return Object.keys(gameState.value.players).filter(
     (playerName) => gameState.value.players[playerName].is_alive
-  )
-})
+  );
+});
 
 function tryFinish() {
-  if (gameState.value?.is_finished === undefined) return
+  if (gameState.value?.is_finished === undefined) return;
   if (gameState.value.is_finished) {
-    systemMessage("Game has finished 🎉")
+    systemMessage("Game has finished 🎉");
     console.log(alivePlayers.value);
     if (alivePlayers.value.length > 0) {
-      systemMessage(`The following player${alivePlayers.value.length > 1 ? 's' : ''} survived:`)
+      systemMessage(
+        `The following player${
+          alivePlayers.value.length > 1 ? "s" : ""
+        } survived:`
+      );
       alivePlayers.value.forEach((playerName) => {
-        systemMessage(`• ${playerName}`)
-      })
+        systemMessage(`• ${playerName}`);
+      });
     } else {
-      systemMessage("No one survived. Better luck next time!")
+      systemMessage("No one survived. Better luck next time!");
     }
-    return true
+    return true;
   }
 }
 
 const chatSocket = new WebSocket(
-  `${wsScheme}://${import.meta.env.VITE_API_BASE_URL}/ws/chat/${props.gameCode}/${nickname}/`
+  `${wsScheme}://${import.meta.env.VITE_API_BASE_URL}/ws/chat/${
+    props.gameCode
+  }/${nickname}/`
 );
 chatSocket.addEventListener("message", function (event) {
   const data = JSON.parse(event.data.toString());
   console.log("Message from chatSocket: ", data);
   messages.push(data);
-  localStorage.setItem(
-    `messages:${props.gameCode}`,
-    JSON.stringify(messages)
-  )
-})
+  localStorage.setItem(`messages:${props.gameCode}`, JSON.stringify(messages));
+});
 
 function systemMessage(message) {
   messages.push({
     message: message,
     username: "server",
     systemMessage: true,
-  })
-  localStorage.setItem(
-    `messages:${props.gameCode}`,
-    JSON.stringify(messages)
-  )
+  });
+  localStorage.setItem(`messages:${props.gameCode}`, JSON.stringify(messages));
 }
 
 function sendMessage(message) {

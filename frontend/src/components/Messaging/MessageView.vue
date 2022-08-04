@@ -51,14 +51,16 @@ let messageListElement = ref(undefined);
 
 function scrollToLastMessage() {
   if (messageListElement.value !== undefined) {
-    messageListElement.value.lastElementChild.scrollIntoView({ behavior: "smooth" })
+    messageListElement.value.lastElementChild.scrollIntoView({
+      behavior: "smooth",
+    });
   }
 }
 
 onMounted(() => {
-  messageListElement.value = document.getElementById("messageList")
+  messageListElement.value = document.getElementById("messageList");
   messageListElement.value.addEventListener("DOMNodeInserted", () => {
-    scrollToLastMessage()
+    scrollToLastMessage();
   });
-})
+});
 </script>
