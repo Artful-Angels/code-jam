@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import {computed, inject, onMounted, reactive, ref} from "vue";
+import { computed, inject, reactive, ref } from "vue";
 import MessageView from "@/components/Messaging/MessageView.vue";
 import GameBoard from "@/components/GameBoard/GameBoard.vue";
 
@@ -46,9 +46,11 @@ const props = defineProps({
   },
 });
 
-let messages = reactive([]);
 let gameState = reactive({ value: {} });
 let gameStarted = ref(false);
+let messages = reactive(JSON.parse(
+  localStorage.getItem(`messages:${props.gameCode}`)
+) || [])
 
 const wsScheme = window.location.protocol === "https:" ? "wss" : "ws"
 
@@ -109,14 +111,22 @@ chatSocket.addEventListener("message", function (event) {
   const data = JSON.parse(event.data.toString());
   console.log("Message from chatSocket: ", data);
   messages.push(data);
-});
+  localStorage.setItem(
+    `messages:${props.gameCode}`,
+    JSON.stringify(messages)
+  )
+})
 
 function systemMessage(message) {
   messages.push({
     message: message,
     username: "server",
     systemMessage: true,
-  });
+  })
+  localStorage.setItem(
+    `messages:${props.gameCode}`,
+    JSON.stringify(messages)
+  )
 }
 
 function sendMessage(message) {
