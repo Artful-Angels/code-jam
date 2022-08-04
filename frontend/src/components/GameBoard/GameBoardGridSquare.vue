@@ -6,7 +6,8 @@
     @contextmenu.prevent="$emit('toggleFlag', coordinates)"
     :disabled="disabled || is_open"
   >
-    <Flag v-if="isFlagged && !is_open" />
+    <Flag v-if="flagStatus === 1 && !is_open" />
+    <FlagSafe v-else-if="flagStatus === 2 && !is_open" />
     <Mine v-else-if="is_open && is_mine" />
     <span v-else-if="is_open" class="my-[-10px] dark:text-gray-300">{{
       adjacent_mines ? adjacent_mines : ""
@@ -17,7 +18,7 @@
 <script setup>
 import Flag from "@/components/icons/Flag.vue";
 import Mine from "@/components/icons/Mine.vue";
-import { ref } from "vue";
+import FlagSafe from "@/components/icons/FlagSafe.vue";
 
 const emit = defineEmits(["openSquare", "toggleFlag"]);
 
@@ -36,10 +37,10 @@ const props = defineProps({
     required: false,
     default: false,
   },
-  isFlagged: {
-    type: Boolean,
+  flagStatus: {
+    type: Number,
     required: false,
-    default: false,
+    default: 0,
   },
   disabled: {
     type: Boolean,
@@ -54,7 +55,7 @@ const props = defineProps({
 });
 
 function openSquare() {
-  if (!props.isFlagged && !props.is_open) {
+  if (props.flagStatus !== 1 && !props.is_open) {
     emit("openSquare", props.coordinates);
   }
 }

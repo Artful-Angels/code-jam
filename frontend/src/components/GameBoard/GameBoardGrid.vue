@@ -4,7 +4,7 @@
       v-for="(square, key) in squares"
       :key="key"
       v-bind="square"
-      :isFlagged="flaggedSquares[key]"
+      :flagStatus="flaggedSquares[key]"
       :disabled="!isAlive || isFinished"
       @toggleFlag="(coordinates) => toggleFlag(key)"
       @openSquare="(coordinates) => $emit('openSquare', coordinates)"
@@ -44,12 +44,26 @@ let flaggedSquares = reactive(
 );
 
 function toggleFlag(coordinates) {
-  if (flaggedSquares.hasOwnProperty(coordinates)) {
-    flaggedSquares[coordinates] = flaggedSquares[coordinates] === false;
-  } else {
-    flaggedSquares[coordinates] = true;
-  }
-  sessionStorage.setItem(`flaggedSquares:${props.gameCode}`, JSON.stringify(flaggedSquares));
-}
+  /*
+  Flags come in 3 types:
+  0: unflagged
+  1: flagged
+  2: marked safe
 
+  Every time toggleFlag is called, the flag type is incremented by 1, until it hits 3 and goes back to 0.
+   */
+  if (flaggedSquares.hasOwnProperty(coordinates)) {
+    if (flaggedSquares[coordinates] === 2) {
+      flaggedSquares[coordinates] = 0;
+    } else {
+      flaggedSquares[coordinates]++;
+    }
+  } else {
+    flaggedSquares[coordinates] = 1;
+  }
+  sessionStorage.setItem(
+    `flaggedSquares:${props.gameCode}`,
+    JSON.stringify(flaggedSquares)
+  );
+}
 </script>
