@@ -20,5 +20,5 @@ jobs:
         git fetch --unshallow
         git checkout deploy
         git pull
-        git rebase dev
+        git rebase main
         git push
