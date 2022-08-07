@@ -18,13 +18,11 @@ jobs:
         git config --local user.email "<>"
         git config --local user.name "Auto-Deploy"
 
-    - name: Fetch GitHub data
+    - name: Fetch and pull deploy branch
       run: |
         git fetch --unshallow
-        git checkout deploy-backend
+        git checkout deploy
         git pull
 
-    - name: Rebase and push
-      run: |
-        git rebase deploy
-        git push
+    - name: Git subtree push
+      run: git subtree push --prefix backend origin deploy-backend
