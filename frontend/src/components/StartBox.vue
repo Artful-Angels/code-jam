@@ -73,7 +73,7 @@ import LogoV2 from "@/components/logos/LogoV2.vue";
 import axios from "axios";
 import router from "@/router";
 import { useRoute } from "vue-router";
-import {inject, ref} from "vue";
+import { inject, ref } from "vue";
 
 const $cookies = inject("$cookies");
 const route = useRoute();

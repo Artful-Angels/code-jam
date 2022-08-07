@@ -24,5 +24,5 @@ const props = defineProps({
   },
 });
 
-const joinUrl = `${window.location.host}/?game=${props.gameCode}`
+const joinUrl = `${window.location.host}/?game=${props.gameCode}`;
 </script>

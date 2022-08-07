@@ -24,6 +24,8 @@
       <MessageView
         :messages="messages"
         :nickname="nickname"
+        :gameCode="gameCode"
+        :gameStarted="gameStarted"
         @send-message="(message) => sendMessage(message)"
       />
     </section>
@@ -67,7 +69,7 @@ gameSocket.addEventListener("message", function (event) {
     case "start_game":
       gameState.value = data.data;
       gameStarted.value = true;
-      !tryFinish()
+      !tryFinish();
       break;
     case "update_game":
       gameState.value = data.data;
