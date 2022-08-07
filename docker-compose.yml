@@ -14,8 +14,9 @@ services:
       dockerfile: ./docker/django/Dockerfile
     container_name: django_app
     environment:
-      - SECRET_KEY="fljwfn3h5i2g4edrh53/1kml1fe/"
-      - DJANGO_SETTINGS_MODULE="core.settings.dev"
+      - SECRET_KEY=fljwfn3h5i2g4edrh53/1kml1fe/
+      - DJANGO_SETTINGS_MODULE=core.settings.dev
+
     ports:
       - "8000:8000"
     volumes:
