@@ -33,11 +33,11 @@
               placeholder="Game code"
               class="pr-28 inline"
               v-model="gameCode"
-              :disabled="$route.query?.game_code !== undefined"
+              :disabled="$route.query?.game !== undefined"
               required
             />
             <a
-              v-if="$route.query?.game_code === undefined"
+              v-if="$route.query?.game === undefined"
               href="#"
               @click="updateGameCode()"
               style="margin-left: -94px"
@@ -79,7 +79,7 @@ const $cookies = inject("$cookies");
 const route = useRoute();
 
 let nickname = $cookies.get("nickname");
-let gameCode = route.query.game_code;
+let gameCode = route.query.game;
 const gameCodeRef = ref(null);
 
 function updateGameCode() {

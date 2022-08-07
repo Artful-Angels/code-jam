@@ -21,7 +21,6 @@
             {{ deadPlayers.length }}
           </span>
         </p>
-        <!-- <p>Anybody's turn</p> -->
       </div>
     </div>
     <GameBoardGrid
