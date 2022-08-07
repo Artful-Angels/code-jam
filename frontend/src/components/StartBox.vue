@@ -33,9 +33,11 @@
               placeholder="Game code"
               class="pr-28 inline"
               v-model="gameCode"
+              :disabled="$route.query?.game_code !== undefined"
               required
             />
             <a
+              v-if="$route.query?.game_code === undefined"
               href="#"
               @click="updateGameCode()"
               style="margin-left: -94px"
@@ -70,13 +72,14 @@ import LogoV1 from "@/components/logos/LogoV1.vue";
 import LogoV2 from "@/components/logos/LogoV2.vue";
 import axios from "axios";
 import router from "@/router";
-import { inject, ref } from "vue";
+import { useRoute } from "vue-router";
+import {inject, ref} from "vue";
 
 const $cookies = inject("$cookies");
+const route = useRoute();
 
-let nickname = undefined;
-let gameCode = undefined;
-
+let nickname = $cookies.get("nickname");
+let gameCode = route.query.game_code;
 const gameCodeRef = ref(null);
 
 function updateGameCode() {

@@ -5,5 +5,3 @@ import StartBox from "@/components/StartBox.vue";
 <template>
   <StartBox />
 </template>
-
-<style></style>
