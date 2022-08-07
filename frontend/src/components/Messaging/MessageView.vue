@@ -73,7 +73,7 @@ const props = defineProps({
 let userMessage = ref("");
 let messageListElement = ref(undefined);
 
-const joinUrl = `${window.location.host}/?game=${props.gameCode}`;
+const joinUrl = `${window.location.origin}/?game=${props.gameCode}`;
 
 function scrollToLastMessage() {
   if (messageListElement.value !== undefined) {
