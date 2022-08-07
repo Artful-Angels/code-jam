@@ -25,7 +25,7 @@
         :messages="messages"
         :nickname="nickname"
         :gameCode="gameCode"
-        :gameStarted="gameStarted"
+        :gameStarted="gameState.value.is_started"
         @send-message="(message) => sendMessage(message)"
       />
     </section>
