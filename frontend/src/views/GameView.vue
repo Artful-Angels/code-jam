@@ -13,7 +13,6 @@
         "
         @playerDied="
           (player) => {
-            // if not all players are dead, call systemMessage
             if (alivePlayers.length > 0 && player !== undefined) {
               systemMessage(`${player} has died`);
             }
@@ -61,7 +60,6 @@ const gameSocket = new WebSocket(
 );
 gameSocket.addEventListener("message", function (event) {
   let data = JSON.parse(event.data.toString());
-  console.log("Message from gameSocket: ", data);
   switch (data.method) {
     case "update_members":
       gameState.value.players = data.data;
@@ -69,11 +67,7 @@ gameSocket.addEventListener("message", function (event) {
     case "start_game":
       gameState.value = data.data;
       gameStarted.value = true;
-      if (!tryFinish()) {
-        // if (data.data.is_started === false) {
-        // systemMessage("Game has started!");
-        // }
-      }
+      !tryFinish()
       break;
     case "update_game":
       gameState.value = data.data;
@@ -117,7 +111,6 @@ const chatSocket = new WebSocket(
 );
 chatSocket.addEventListener("message", function (event) {
   const data = JSON.parse(event.data.toString());
-  console.log("Message from chatSocket: ", data);
   messages.push(data);
   localStorage.setItem(`messages:${props.gameCode}`, JSON.stringify(messages));
 });
