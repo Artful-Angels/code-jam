@@ -8,9 +8,9 @@ ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = True
 
 
-# Cannel layers config
+# Using redis server
 
-# 1- Channel layers config wirth redis
+# Channel layers config wirth redis
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -22,17 +22,7 @@ CHANNEL_LAYERS = {
         },
     },
 }
-
-# 2 -Channel layers config running on memory (without redis server)
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels.layers.InMemoryChannelLayer"
-#     }
-# }
-
-# Cache Config
-
-# 1- Cache config with redis
+# Cache config with redis
 
 CACHES = {
     "default": {
@@ -46,7 +36,18 @@ CACHES = {
     }
 }
 
-# 2- Cache config in local memory (without need redis)
+
+# Using local memory and ram
+
+# 2 -Channel layers config running on memory (without redis server)
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"
+#     }
+# }
+
+
+# Cache config in local memory (without need redis)
 
 # CACHES = {
 #     "default": {
