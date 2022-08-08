@@ -114,8 +114,11 @@ def _remove_mines(game_state: dict, x: int, y: int):
 def _assign_turn(game_state: dict, nickname: str) -> None:
 
     players = game_state["players"]
-    alive_players = [player for player in players if players[player]["is_alive"]]
-
+    alive_players = [player for player in players if players[player]["is_alive"] and players[player]["is_online"]]
+    print(alive_players)
+    if len(alive_players) == 0:
+        game_state["turn_id"] = None
+        return
     if len(alive_players) != 1:
         current_player_index = alive_players.index(nickname)
 
@@ -123,13 +126,14 @@ def _assign_turn(game_state: dict, nickname: str) -> None:
             next_player = alive_players[0]
         else:
             next_player = alive_players[current_player_index + 1]
-            if not next_player["is_online"]:
-                _assign_turn(game_state, next_player["nickname"])
 
         game_state["turn_id"] = players[next_player]["id"]
 
     else:
-        game_state["turn_id"] = players[nickname]["id"]
+        if nickname in alive_players:
+            game_state["turn_id"] = players[nickname]["id"]
+        else:
+            game_state["turn_id"] = None
 
 
 def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
@@ -140,8 +144,6 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
         raise GameFinished()
     elif game_state["turn_id"] != game_state["players"][nickname]["id"]:
         raise NotPlayersTurn()
-
-    _assign_turn(game_state, nickname)
 
     square = game_state["squares"][dumps([x, y])]
 
@@ -174,7 +176,8 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
 
     if not game_state["is_started"]:
         game_state["is_started"] = True
-
+    print("clicked")
+    _assign_turn(game_state, nickname)
     return game_state
 
 
@@ -282,22 +285,30 @@ def create_game(game_code: int, mines: int = 100, width: int = 30, height: int =
     return game_state
 
 
-def add_member_to_game(game_state: dict, nickname: str) -> None:
-
+def add_member_to_game(game_state: dict, nickname: str) -> dict:
     if game_state["is_started"]:
+        if nickname in game_state["players"]:
+            if game_state["players"][nickname]["is_alive"]:
+                game_state["players"][nickname]["is_online"] = True
+                return game_state
+            else:
+                raise GameStarted()
         raise GameStarted()
-    elif nickname in game_state["players"]:
-        raise NicknameTaken()
 
-    game_state["players"][nickname] = {
-        "id": len(game_state["players"]) + 1,
-        "nickname": nickname,
-        "is_alive": True,
-        "is_online": True,
-        "chanced_win": False,
-        "revived": False,
-        "squares_deleted": 0,
-    }
+    else:
+        if nickname in game_state["players"]:
+            raise NicknameTaken()
+
+        game_state["players"][nickname] = {
+            "id": len(game_state["players"]) + 1,
+            "nickname": nickname,
+            "is_alive": True,
+            "is_online": True,
+            "chanced_win": False,
+            "revived": False,
+            "squares_deleted": 0,
+        }
+        return game_state
 
 
 def eliminate_player(game_state: dict, nickname: str) -> None:
@@ -309,3 +320,17 @@ def make_player_ofline(game_state: dict, nickname: str) -> dict:
 
     game_state["players"][nickname]["is_online"] = False
     return game_state
+
+
+def assign_turn_to_specific_player(game_state: dict, nickname: str) -> dict:
+    game_state["turn_id"] = game_state["players"][nickname]["id"]
+    return game_state
+
+
+def if_player_is_the_only_online_and_alive(game_state: dict, nickname: str) -> bool:
+    players = game_state["players"]
+    alive_players = [player for player in players if players[player]["is_alive"] and players[player]["is_online"]]
+    if len(alive_players) == 1:
+        if alive_players[0] == nickname:
+            return True
+    return False

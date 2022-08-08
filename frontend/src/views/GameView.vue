@@ -59,7 +59,7 @@ const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
 const gameSocket = new WebSocket(
   `${wsScheme}://${import.meta.env.VITE_API_BASE_URL}/ws/game/${
     props.gameCode
-  }/`
+  }/${nickname}/`
 );
 gameSocket.addEventListener("message", function (event) {
   let data = JSON.parse(event.data.toString());

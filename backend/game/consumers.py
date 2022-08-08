@@ -5,8 +5,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.cache import cache
 
 from .game_handlers.game_logic import (
-    GameFinished, NotPlayersTurn, PlayerDead, make_player_ofline,
-    square_clicked
+    GameFinished, NotPlayersTurn, PlayerDead, assign_turn_to_specific_player,
+    if_player_is_the_only_online_and_alive, make_player_ofline, square_clicked
 )
 from .game_handlers.message_handler import input_handler
 
@@ -24,11 +24,15 @@ class GameConsumer(AsyncWebsocketConsumer):
         )
         # Checking game and the game plysers
         game_state = await cache.aget(f"game:{self.game_id}")
-
+        print("connect")
+        print(game_state["players"])
         if game_state is None:
             return
-        game_state["players"][self.nickname]["is_online"] = True
-        await cache.aset(f"game:{self.game_id}", game_state)
+        if if_player_is_the_only_online_and_alive(game_state, self.nickname):
+            game_state = assign_turn_to_specific_player(game_state, self.nickname)
+            await cache.aset(f"game:{self.game_id}", game_state)
+        # game_state["players"][self.nickname]["is_online"] = True
+        # await cache.aset(f"game:{self.game_id}", game_state)
         game_players = game_state["players"]
 
         if len(game_players.keys()) > 1:
@@ -48,6 +52,9 @@ class GameConsumer(AsyncWebsocketConsumer):
         # Remove the user from the game group
         game_state = await cache.aget(f"game:{self.game_id}")
         game_state = make_player_ofline(game_state, self.nickname)
+        await cache.aset(f"game:{self.game_id}", game_state)
+        print("disconnect")
+        print(game_state["players"])
         await self.channel_layer.group_send(self.game_id, {"type": "Send_Game", "data": game_state})
         await self.channel_layer.group_discard(self.game_id, self.channel_name)
 
@@ -60,7 +67,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             data = payload_json["data"]
             player_name = data["player_name"]
             click_at = data["click_at"]  # should = list or tuple
-
+            print(player_name)
             game_state = await cache.aget(f"game:{self.game_id}")
             if game_state:
                 try:

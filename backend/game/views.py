@@ -22,7 +22,7 @@ def create_or_join(request):
         # Check if the game already in the cache
         if game_state:
             try:
-                add_member_to_game(game_state, nick_name)
+                game_state = add_member_to_game(game_state, nick_name)
             except NicknameTaken:
                 return Response(status=status.HTTP_409_CONFLICT)
             except GameStarted:
@@ -33,7 +33,7 @@ def create_or_join(request):
 
         # Create new game
         game_state = create_game(int(game_code))
-        add_member_to_game(game_state, nick_name)
+        game_state = add_member_to_game(game_state, nick_name)
         cache.set(f"game:{game_code}", game_state)
 
         return Response(status=status.HTTP_200_OK)
