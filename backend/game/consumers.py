@@ -5,7 +5,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.cache import cache
 
 from .game_handlers.game_logic import (
-    GameFinished, NotPlayersTurn, PlayerDead, square_clicked
+    GameFinished, NotPlayersTurn, PlayerDead, make_player_ofline,
+    square_clicked
 )
 from .game_handlers.message_handler import input_handler
 
@@ -16,6 +17,7 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         # Add the user to the game group
         self.game_id = self.scope["url_route"]["kwargs"]["game_id"]
+        self.nickname = self.scope["url_route"]["kwargs"]["nickname"]
         await self.channel_layer.group_add(
             self.game_id,
             self.channel_name,
@@ -25,7 +27,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         if game_state is None:
             return
-
+        game_state["players"][self.nickname]["is_online"] = True
+        await cache.aset(f"game:{self.game_id}", game_state)
         game_players = game_state["players"]
 
         if len(game_players.keys()) > 1:
@@ -43,6 +46,9 @@ class GameConsumer(AsyncWebsocketConsumer):
     # Disconnect
     async def disconnect(self, close_code):
         # Remove the user from the game group
+        game_state = await cache.aget(f"game:{self.game_id}")
+        game_state = make_player_ofline(game_state, self.nickname)
+        await self.channel_layer.group_send(self.game_id, {"type": "Send_Game", "data": game_state})
         await self.channel_layer.group_discard(self.game_id, self.channel_name)
 
     # Receive messages from frontend websocket connection

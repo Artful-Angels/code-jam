@@ -123,6 +123,8 @@ def _assign_turn(game_state: dict, nickname: str) -> None:
             next_player = alive_players[0]
         else:
             next_player = alive_players[current_player_index + 1]
+            if not next_player["is_online"]:
+                _assign_turn(game_state, next_player["nickname"])
 
         game_state["turn_id"] = players[next_player]["id"]
 
@@ -291,6 +293,7 @@ def add_member_to_game(game_state: dict, nickname: str) -> None:
         "id": len(game_state["players"]) + 1,
         "nickname": nickname,
         "is_alive": True,
+        "is_online": True,
         "chanced_win": False,
         "revived": False,
         "squares_deleted": 0,
@@ -300,3 +303,9 @@ def add_member_to_game(game_state: dict, nickname: str) -> None:
 def eliminate_player(game_state: dict, nickname: str) -> None:
 
     game_state["players"][nickname]["is_alive"] = False
+
+
+def make_player_ofline(game_state: dict, nickname: str) -> dict:
+
+    game_state["players"][nickname]["is_online"] = False
+    return game_state
