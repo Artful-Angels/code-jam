@@ -75,6 +75,9 @@ gameSocket.addEventListener("message", function (event) {
     case "update_game":
       gameState.value = data.data;
       tryFinish();
+      if (gameState.value.players[nickname].id === data.data.turn_id) {
+        sendNotification("Your turn!", "Make your move");
+      }
       break;
   }
 });
