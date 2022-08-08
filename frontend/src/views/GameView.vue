@@ -34,6 +34,7 @@
 
 <script setup>
 import { computed, inject, reactive, ref } from "vue";
+import { sendNotification } from "@/helpers/notifications.js";
 import MessageView from "@/components/Messaging/MessageView.vue";
 import GameBoard from "@/components/GameBoard/GameBoard.vue";
 
@@ -115,6 +116,7 @@ chatSocket.addEventListener("message", function (event) {
   const data = JSON.parse(event.data.toString());
   messages.push(data);
   localStorage.setItem(`messages:${props.gameCode}`, JSON.stringify(messages));
+  sendNotification(`Message from ${data.username}`, data.message, "message")
 });
 
 function systemMessage(message) {
