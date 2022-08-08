@@ -154,10 +154,13 @@ def square_clicked(game_state: dict, nickname: str, x: int, y: int) -> dict:
         square["is_open"] = True
         eliminate_player(game_state, nickname)
         game_state["is_finished"] = True
+        finish_at = 1
+        alives = 0
         for player in game_state["players"]:
             if game_state["players"][player]["is_alive"]:
-                game_state["is_finished"] = False
-                break
+                alives += 1
+        if alives > finish_at:
+            game_state["is_finished"] = False
 
     square["is_open"] = True
 
